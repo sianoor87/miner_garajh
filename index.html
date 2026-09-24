@@ -1,1 +1,289 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Miner Garage</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+    font-family:Arial,sans-serif;
+    background:#07100d;
+    color:#fff;
+    min-height:100vh;
+}
+.app{
+    max-width:480px;
+    margin:auto;
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 50% 15%,#173d2c 0,#0b1c15 32%,#07100d 70%);
+    padding-bottom:90px;
+}
+.header{
+    padding:22px 18px 12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.logo{
+    font-size:22px;
+    font-weight:800;
+    letter-spacing:1px;
+}
+.balance{
+    background:#13271f;
+    border:1px solid #2e6048;
+    padding:9px 13px;
+    border-radius:14px;
+    font-weight:bold;
+}
+.hero{
+    margin:8px 15px;
+    border:1px solid #28543e;
+    border-radius:26px;
+    background:linear-gradient(145deg,#132c21,#091510);
+    padding:20px;
+    box-shadow:0 15px 45px #0008;
+}
+.eyebrow{
+    color:#6ee7a7;
+    font-size:12px;
+    font-weight:bold;
+    letter-spacing:2px;
+}
+.hero h1{
+    margin-top:7px;
+    font-size:28px;
+}
+.sneaker{
+    height:245px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:relative;
+}
+.shoe{
+    font-size:125px;
+    filter:drop-shadow(0 20px 25px #000);
+    transform:rotate(-12deg);
+}
+.energy{
+    position:absolute;
+    width:190px;
+    height:190px;
+    border-radius:50%;
+    background:#40e98b18;
+    box-shadow:0 0 55px #40e98b33;
+}
+.credit{
+    background:#10261b;
+    border:1px solid #356f50;
+    border-radius:18px;
+    padding:15px;
+    margin-top:5px;
+}
+.credit-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.green{color:#63e69a}
+.small{font-size:12px;color:#91a69c;margin-top:5px}
+.activate{
+    width:100%;
+    margin-top:15px;
+    border:0;
+    border-radius:15px;
+    padding:15px;
+    background:linear-gradient(90deg,#35d982,#7cf3a9);
+    color:#04120b;
+    font-weight:900;
+    font-size:16px;
+}
+.section{
+    padding:18px 15px 5px;
+}
+.section-title{
+    font-size:20px;
+    font-weight:800;
+    margin-bottom:12px;
+}
+.vehicles{
+    display:flex;
+    gap:12px;
+    overflow-x:auto;
+    padding-bottom:12px;
+}
+.vehicle{
+    min-width:165px;
+    background:#102018;
+    border:1px solid #254936;
+    border-radius:20px;
+    padding:15px;
+}
+.vehicle-icon{
+    height:105px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:65px;
+}
+.vehicle h3{font-size:15px;margin-bottom:8px}
+.price{
+    font-size:20px;
+    font-weight:900;
+}
+.reward{
+    color:#65e49a;
+    font-size:12px;
+    margin-top:5px;
+}
+.lock{
+    margin-top:12px;
+    width:100%;
+    border:1px solid #345443;
+    background:#17291f;
+    color:#91a69c;
+    padding:9px;
+    border-radius:10px;
+}
+.nav{
+    position:fixed;
+    bottom:0;
+    left:50%;
+    transform:translateX(-50%);
+    width:min(480px,100%);
+    height:76px;
+    background:#091510ee;
+    backdrop-filter:blur(18px);
+    border-top:1px solid #244634;
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+}
+.nav-item{
+    color:#71877b;
+    text-align:center;
+    font-size:10px;
+}
+.nav-item span{
+    display:block;
+    font-size:21px;
+    margin-bottom:4px;
+}
+.nav-item.active{color:#65e49a}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header class="header">
+    <div class="logo">⛏ MINER GARAGE</div>
+    <div class="balance">$0.00</div>
+</header>
+
+<section class="hero">
+
+    <div class="eyebrow">STARTER MINER</div>
+    <h1>Sneaker</h1>
+
+    <div class="sneaker">
+        <div class="energy"></div>
+        <div class="shoe">👟</div>
+    </div>
+
+    <div class="credit">
+        <div class="credit-row">
+            <div>
+                <strong>Starter Credit</strong>
+                <div class="small">Use this credit to activate your first miner</div>
+            </div>
+            <strong class="green">$0.30</strong>
+        </div>
+
+        <button class="activate" onclick="activateSneaker()">
+            ACTIVATE SNEAKER
+        </button>
+    </div>
+
+</section>
+
+<section class="section">
+    <div class="section-title">Garage</div>
+
+    <div class="vehicles">
+
+        <div class="vehicle">
+            <div class="vehicle-icon">🚲</div>
+            <h3>Bicycle</h3>
+            <div class="price">$0.50</div>
+            <div class="reward">$1.50 monthly</div>
+            <button class="lock">LOCKED</button>
+        </div>
+
+        <div class="vehicle">
+            <div class="vehicle-icon">🛵</div>
+            <h3>Basic Motorcycle</h3>
+            <div class="price">$1.00</div>
+            <div class="reward">$3.00 monthly</div>
+            <button class="lock">LOCKED</button>
+        </div>
+
+        <div class="vehicle">
+            <div class="vehicle-icon">🏍️</div>
+            <h3>Professional Motorcycle</h3>
+            <div class="price">$3.00</div>
+            <div class="reward">$5.00 monthly</div>
+            <button class="lock">LOCKED</button>
+        </div>
+
+        <div class="vehicle">
+            <div class="vehicle-icon">🚗</div>
+            <h3>Standard Car</h3>
+            <div class="price">$5.00</div>
+            <div class="reward">$8.00 monthly</div>
+            <button class="lock">LOCKED</button>
+        </div>
+
+        <div class="vehicle">
+            <div class="vehicle-icon">🏎️</div>
+            <h3>Professional Car</h3>
+            <div class="price">$7.00</div>
+            <div class="reward">$11.00 monthly</div>
+            <button class="lock">LOCKED</button>
+        </div>
+
+        <div class="vehicle">
+            <div class="vehicle-icon">🚛</div>
+            <h3>Luxury Heavy Truck</h3>
+            <div class="price">$10.00</div>
+            <div class="reward">$15.00 monthly</div>
+            <button class="lock">LOCKED</button>
+        </div>
+
+    </div>
+</section>
+
+<nav class="nav">
+    <div class="nav-item active"><span>🏠</span>Home</div>
+    <div class="nav-item"><span>⛏️</span>Miners</div>
+    <div class="nav-item"><span>💳</span>Deposit</div>
+    <div class="nav-item"><span>💰</span>Withdraw</div>
+    <div class="nav-item"><span>👥</span>Referral</div>
+</nav>
+
+</div>
+
+<script>
+function activateSneaker(){
+    alert("Sneaker activation will be connected to the real mining system in the next step.");
+}
+</script>
+
+</body>
+          </html>
