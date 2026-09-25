@@ -643,21 +643,21 @@ button{
 
     <div class="section-title">
         <h2>Deposit</h2>
-        <span>TON NETWORK</span>
+        <span>BSC NETWORK (BEP20)</span>
     </div>
 
     <div class="card">
 
-        <h3>TON Deposit Address</h3>
+        <h3>USDT (BEP20) Deposit Address</h3>
 
         <p>
-            Send TON to the wallet address below.
+            Send USDT (BEP20) to the wallet address below.
             Blockchain deposits must be verified by the backend before
             becoming available balance.
         </p>
 
         <div class="wallet" id="walletAddress">
-            UQAkLja7Y_yEYU89mfeRWpBJvIblFEcYMk14LxMK7ivmOyps
+            0x057b07157577C7B30800a2eE7df6f1d72B2D389a
         </div>
 
         <button class="copy-btn" onclick="copyWallet()">
@@ -671,7 +671,7 @@ button{
         <h3>Payment Verification</h3>
 
         <p>
-            After sending TON, enter the transaction hash below.
+            After sending USDT, enter the BSC transaction hash below.
             Automatic blockchain verification will be connected to the
             backend.
         </p>
@@ -679,7 +679,7 @@ button{
         <input
             class="input"
             id="txHash"
-            placeholder="TON transaction hash"
+            placeholder="BSC transaction hash (0x...)"
         >
 
         <button class="action-btn" onclick="submitDeposit()">
@@ -697,7 +697,7 @@ button{
 
     <div class="section-title">
         <h2>Withdraw</h2>
-        <span>TON</span>
+        <span>BEP20</span>
     </div>
 
     <div class="card">
@@ -712,7 +712,7 @@ button{
         <input
             class="input"
             id="withdrawAddress"
-            placeholder="Your TON wallet address"
+            placeholder="Your BEP20 USDT wallet address"
         >
 
         <input
@@ -987,11 +987,11 @@ const miners = [
 
 
 /* ==========================================
-   TON WALLET
+   BSC WALLET (BEP20)
 ========================================== */
 
 const PROJECT_WALLET =
-"UQAkLja7Y_yEYU89mfeRWpBJvIblFEcYMk14LxMK7ivmOyps";
+"0x057b07157577C7B30800a2eE7df6f1d72B2D389a";
 
 
 /* ==========================================
@@ -1239,7 +1239,7 @@ function selectMiner(id){
         money(miner.price) +
         "\n\nMonthly reward: " +
         money(miner.reward) +
-        "\n\nPurchase verification will be connected to the real TON payment system through the backend."
+        "\n\nPurchase verification will be connected to the real BEP20 USDT payment system through the backend."
     );
 
 }
@@ -1433,10 +1433,6 @@ function updateUI(){
 
     }
 
-    /*
-       Visual progress through the first 30 days.
-    */
-
     let progress = 0;
 
     if(state.miningStarted){
@@ -1555,7 +1551,7 @@ function copyWallet(){
 
             showModal(
                 "Copied",
-                "TON wallet address copied successfully."
+                "BEP20 USDT wallet address copied successfully."
             );
 
         });
@@ -1603,17 +1599,11 @@ function submitDeposit(){
 
         showModal(
             "Transaction Required",
-            "Enter the TON transaction hash."
+            "Enter the BSC transaction hash."
         );
 
         return;
     }
-
-    /*
-       IMPORTANT:
-       Do NOT credit balance here.
-       Backend must verify the transaction on TON blockchain.
-    */
 
     addHistory(
         "Deposit Submitted",
@@ -1652,7 +1642,7 @@ function requestWithdraw(){
 
         showModal(
             "Wallet Required",
-            "Enter your TON wallet address."
+            "Enter your BEP20 wallet address."
         );
 
         return;
@@ -1679,11 +1669,6 @@ function requestWithdraw(){
 
         return;
     }
-
-    /*
-       Do NOT subtract/complete a withdrawal locally.
-       Backend must validate balance and create the real payout.
-    */
 
     addHistory(
         "Withdrawal Requested",
@@ -1773,11 +1758,6 @@ function initTelegram(){
                 "Telegram ID: " +
                 user.id;
 
-            /*
-               Referral URL will be generated
-               by the Telegram bot/backend.
-            */
-
         }
 
     }
@@ -1797,19 +1777,11 @@ updateUI();
 
 initTelegram();
 
-
-/*
-   Live mining display.
-
-   The frontend calculates elapsed time only for display.
-   Production balance must be calculated server-side.
-*/
-
 setInterval(() => {
 
     updateUI();
 
-}1000);
+}, 1000);
 
 </script>
 
@@ -1817,4 +1789,4 @@ setInterval(() => {
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 </body>
-                                            </html>
+</html>
