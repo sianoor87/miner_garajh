@@ -36,7 +36,6 @@ button{
 }
 
 /* HEADER */
-
 .header{
     position:sticky;
     top:0;
@@ -78,7 +77,6 @@ button{
 }
 
 /* CONTENT */
-
 .content{
     padding:18px;
 }
@@ -92,7 +90,6 @@ button{
 }
 
 /* HERO */
-
 .hero{
     position:relative;
     overflow:hidden;
@@ -189,7 +186,6 @@ button{
 }
 
 /* MINING PANEL */
-
 .mining-panel{
     margin-top:14px;
     padding:16px;
@@ -243,7 +239,6 @@ button{
 }
 
 /* SECTION */
-
 .section-title{
     margin:25px 0 12px;
     display:flex;
@@ -261,7 +256,6 @@ button{
 }
 
 /* MINERS */
-
 .miners{
     display:flex;
     flex-direction:column;
@@ -324,7 +318,6 @@ button{
 }
 
 /* CARDS */
-
 .card{
     padding:18px;
     border-radius:20px;
@@ -345,7 +338,6 @@ button{
 }
 
 /* WALLET */
-
 .wallet{
     margin-top:15px;
     padding:13px;
@@ -370,7 +362,6 @@ button{
 }
 
 /* INPUT */
-
 .input{
     width:100%;
     height:48px;
@@ -395,7 +386,6 @@ button{
 }
 
 /* HISTORY */
-
 .history{
     display:flex;
     flex-direction:column;
@@ -427,7 +417,6 @@ button{
 }
 
 /* PROFILE */
-
 .profile-header{
     text-align:center;
     padding:15px;
@@ -457,7 +446,6 @@ button{
 }
 
 /* BOTTOM NAV */
-
 .nav{
     position:fixed;
     z-index:30;
@@ -495,7 +483,6 @@ button{
 }
 
 /* MODAL */
-
 .modal{
     position:fixed;
     inset:0;
@@ -558,7 +545,6 @@ button{
 <main class="content">
 
 <!-- HOME -->
-
 <section id="home" class="page active">
 
     <div class="hero" id="hero">
@@ -624,7 +610,6 @@ button{
 
 
 <!-- MINERS -->
-
 <section id="miners" class="page">
 
     <div class="section-title">
@@ -638,7 +623,6 @@ button{
 
 
 <!-- DEPOSIT -->
-
 <section id="deposit" class="page">
 
     <div class="section-title">
@@ -672,8 +656,7 @@ button{
 
         <p>
             After sending USDT, enter the BSC transaction hash below.
-            Automatic blockchain verification will be connected to the
-            backend.
+            Automatic blockchain verification will be connected to the backend.
         </p>
 
         <input
@@ -692,7 +675,6 @@ button{
 
 
 <!-- WITHDRAW -->
-
 <section id="withdraw" class="page">
 
     <div class="section-title">
@@ -742,7 +724,6 @@ button{
 
 
 <!-- REFERRAL -->
-
 <section id="referral" class="page">
 
     <div class="section-title">
@@ -782,7 +763,6 @@ button{
 
 
 <!-- PROFILE -->
-
 <section id="profile" class="page">
 
     <div class="section-title">
@@ -844,7 +824,6 @@ button{
 
 
 <!-- HISTORY -->
-
 <section id="history" class="page">
 
     <div class="section-title">
@@ -866,7 +845,6 @@ button{
 
 
 <!-- NAV -->
-
 <nav class="nav">
 
     <button class="nav-btn active" onclick="showPage('home',this)">
@@ -900,7 +878,6 @@ button{
 
 
 <!-- MODAL -->
-
 <div class="modal" id="modal">
 
     <div class="modal-box">
@@ -916,798 +893,6 @@ button{
     </div>
 
 </div>
-
-
-<script>
-
-/* ==========================================
-   MINER DATA
-========================================== */
-
-const miners = [
-
-    {
-        id:"sneaker",
-        name:"Starter Sneaker",
-        icon:"👟",
-        price:0.30,
-        reward:0.50,
-        starter:true
-    },
-
-    {
-        id:"bicycle",
-        name:"Bicycle",
-        icon:"🚲",
-        price:0.50,
-        reward:1.50
-    },
-
-    {
-        id:"basic-motorcycle",
-        name:"Basic Motorcycle",
-        icon:"🏍️",
-        price:1.00,
-        reward:3.00
-    },
-
-    {
-        id:"professional-motorcycle",
-        name:"Professional Motorcycle",
-        icon:"🏍️",
-        price:3.00,
-        reward:5.00
-    },
-
-    {
-        id:"standard-car",
-        name:"Standard Car",
-        icon:"🚗",
-        price:5.00,
-        reward:8.00
-    },
-
-    {
-        id:"professional-car",
-        name:"Professional Car",
-        icon:"🚘",
-        price:7.00,
-        reward:11.00
-    },
-
-    {
-        id:"luxury-truck",
-        name:"Luxury Heavy Truck",
-        icon:"🚛",
-        price:10.00,
-        reward:15.00
-    }
-
-];
-
-
-/* ==========================================
-   BSC WALLET (BEP20)
-========================================== */
-
-const PROJECT_WALLET =
-"0x057b07157577C7B30800a2eE7df6f1d72B2D389a";
-
-
-/* ==========================================
-   LOCAL STATE
-   TEMPORARY FRONTEND STATE ONLY
-========================================== */
-
-let state = JSON.parse(
-    localStorage.getItem("minerGarageState") || "null"
-);
-
-if(!state){
-
-    state = {
-
-        balance:0,
-
-        starterCredit:0.30,
-
-        activeMiner:null,
-
-        miningStarted:null,
-
-        mined:0,
-
-        totalEarned:0,
-
-        referrals:0,
-
-        history:[]
-
-    };
-
-}
-
-
-/* ==========================================
-   SAVE
-========================================== */
-
-function save(){
-
-    localStorage.setItem(
-        "minerGarageState",
-        JSON.stringify(state)
-    );
-
-}
-
-
-/* ==========================================
-   FORMAT
-========================================== */
-
-function money(value){
-
-    return "$" + Number(value).toFixed(2);
-
-}
-
-
-/* ==========================================
-   NAVIGATION
-========================================== */
-
-function showPage(page,button){
-
-    document.querySelectorAll(".page")
-        .forEach(p => p.classList.remove("active"));
-
-    document.getElementById(page)
-        .classList.add("active");
-
-    document.querySelectorAll(".nav-btn")
-        .forEach(b => b.classList.remove("active"));
-
-    if(button){
-        button.classList.add("active");
-    }
-
-    window.scrollTo({
-        top:0,
-        behavior:"smooth"
-    });
-
-}
-
-
-/* ==========================================
-   RENDER MINERS
-========================================== */
-
-function renderMiners(){
-
-    const containers = [
-        document.getElementById("homeMiners"),
-        document.getElementById("allMiners")
-    ];
-
-    containers.forEach(container => {
-
-        if(!container) return;
-
-        container.innerHTML = "";
-
-        miners.forEach(miner => {
-
-            const active =
-                state.activeMiner === miner.id;
-
-            const card = document.createElement("div");
-
-            card.className = "miner-card";
-
-            card.innerHTML = `
-
-                <div class="miner-main">
-
-                    <div class="miner-icon">
-                        ${miner.icon}
-                    </div>
-
-                    <div class="miner-info">
-
-                        <div class="miner-name">
-                            ${miner.name}
-                        </div>
-
-                        <div class="miner-price">
-                            Activation: ${money(miner.price)}
-                        </div>
-
-                        <div class="miner-reward">
-                            Monthly reward: ${money(miner.reward)}
-                        </div>
-
-                    </div>
-
-                    <button
-                        class="buy-btn"
-                        onclick="selectMiner('${miner.id}')"
-                        ${active ? "disabled" : ""}
-                    >
-                        ${active ? "ACTIVE" : miner.starter ? "START" : "BUY"}
-                    </button>
-
-                </div>
-            `;
-
-            container.appendChild(card);
-
-        });
-
-    });
-
-}
-
-
-/* ==========================================
-   ACTIVATE SNEAKER
-========================================== */
-
-function activateSneaker(){
-
-    if(state.activeMiner){
-
-        showModal(
-            "Miner Already Active",
-            "Only one miner can be active at a time."
-        );
-
-        return;
-    }
-
-    if(state.starterCredit < 0.30){
-
-        showModal(
-            "Starter Credit Unavailable",
-            "The $0.30 starter activation credit has already been used."
-        );
-
-        return;
-    }
-
-    state.starterCredit = 0;
-
-    state.activeMiner = "sneaker";
-
-    state.miningStarted = Date.now();
-
-    state.mined = 0;
-
-    save();
-
-    addHistory(
-        "Starter Sneaker Activated",
-        "$0.30 starter credit used",
-        "ACTIVATION"
-    );
-
-    updateUI();
-
-    showModal(
-        "MINING STARTED",
-        "Your Starter Sneaker is now active.\n\n" +
-        "Activation: $0.30\n" +
-        "Monthly reward: $0.50\n\n" +
-        "Mining timer has started."
-    );
-
-}
-
-
-/* ==========================================
-   SELECT MINER
-========================================== */
-
-function selectMiner(id){
-
-    if(id === "sneaker"){
-
-        activateSneaker();
-
-        return;
-    }
-
-    const miner =
-        miners.find(m => m.id === id);
-
-    if(!miner) return;
-
-    if(state.activeMiner){
-
-        showModal(
-            "Miner Already Active",
-            "Deactivate or finish the current miner before activating another one."
-        );
-
-        return;
-    }
-
-    showModal(
-        miner.name,
-        "Activation price: " +
-        money(miner.price) +
-        "\n\nMonthly reward: " +
-        money(miner.reward) +
-        "\n\nPurchase verification will be connected to the real BEP20 USDT payment system through the backend."
-    );
-
-}
-
-
-/* ==========================================
-   MINING CALCULATION
-========================================== */
-
-function updateMining(){
-
-    if(!state.activeMiner ||
-       !state.miningStarted){
-
-        return;
-    }
-
-    const miner =
-        miners.find(m => m.id === state.activeMiner);
-
-    if(!miner) return;
-
-    const now = Date.now();
-
-    const elapsed =
-        Math.max(0, now - state.miningStarted);
-
-    const seconds =
-        elapsed / 1000;
-
-    const monthlySeconds =
-        30 * 24 * 60 * 60;
-
-    const earned =
-        miner.reward *
-        (seconds / monthlySeconds);
-
-    state.mined = earned;
-
-    updateUI();
-
-}
-
-
-/* ==========================================
-   TIMER
-========================================== */
-
-function getMiningTime(){
-
-    if(!state.miningStarted){
-
-        return "00:00:00";
-    }
-
-    const elapsed =
-        Math.max(
-            0,
-            Date.now() - state.miningStarted
-        );
-
-    const totalSeconds =
-        Math.floor(elapsed / 1000);
-
-    const days =
-        Math.floor(totalSeconds / 86400);
-
-    const hours =
-        Math.floor(
-            (totalSeconds % 86400) / 3600
-        );
-
-    const minutes =
-        Math.floor(
-            (totalSeconds % 3600) / 60
-        );
-
-    const seconds =
-        totalSeconds % 60;
-
-    const pad =
-        n => String(n).padStart(2,"0");
-
-    if(days > 0){
-
-        return (
-            days + "d " +
-            pad(hours) + ":" +
-            pad(minutes) + ":" +
-            pad(seconds)
-        );
-
-    }
-
-    return (
-        pad(hours) + ":" +
-        pad(minutes) + ":" +
-        pad(seconds)
-    );
-
-}
-
-
-/* ==========================================
-   UI UPDATE
-========================================== */
-
-function updateUI(){
-
-    updateMining();
-
-    document.getElementById("balance")
-        .textContent =
-        money(state.balance);
-
-    document.getElementById("withdrawBalance")
-        .textContent =
-        money(state.balance);
-
-    document.getElementById("totalEarned")
-        .textContent =
-        money(state.totalEarned + state.mined);
-
-    document.getElementById("profileMiner")
-        .textContent =
-        state.activeMiner
-        ? miners.find(m => m.id === state.activeMiner)?.name
-        : "None";
-
-    document.getElementById("activeMiner")
-        .textContent =
-        state.activeMiner
-        ? miners.find(m => m.id === state.activeMiner)?.name
-        : "None";
-
-    document.getElementById("mined")
-        .textContent =
-        "$" + Number(state.mined).toFixed(6);
-
-    document.getElementById("miningTime")
-        .textContent =
-        getMiningTime();
-
-    document.getElementById("referrals")
-        .textContent =
-        state.referrals;
-
-    document.getElementById("profileReferrals")
-        .textContent =
-        state.referrals;
-
-    const active =
-        !!state.activeMiner;
-
-    document.getElementById("miningStatus")
-        .textContent =
-        active ? "ACTIVE" : "INACTIVE";
-
-    document.getElementById("status")
-        .textContent =
-        active ? "MINING ACTIVE" : "INACTIVE";
-
-    document.getElementById("status")
-        .classList.toggle("active",active);
-
-    document.getElementById("hero")
-        .classList.toggle("active",active);
-
-    document.getElementById("sneaker")
-        .classList.toggle(
-            "mining",
-            state.activeMiner === "sneaker"
-        );
-
-    const button =
-        document.getElementById("activateBtn");
-
-    if(state.activeMiner === "sneaker"){
-
-        button.textContent =
-            "✓ MINING ACTIVE";
-
-        button.disabled = true;
-
-    }else{
-
-        button.textContent =
-            "ACTIVATE SNEAKER";
-
-        button.disabled = false;
-
-    }
-
-    let progress = 0;
-
-    if(state.miningStarted){
-
-        const elapsed =
-            Date.now() - state.miningStarted;
-
-        const month =
-            30 * 24 * 60 * 60 * 1000;
-
-        progress =
-            Math.min(100,(elapsed/month)*100);
-
-    }
-
-    document.getElementById("timerBar")
-        .style.width =
-        progress + "%";
-
-    renderMiners();
-
-    renderHistory();
-
-}
-
-
-/* ==========================================
-   HISTORY
-========================================== */
-
-function addHistory(title,description,type){
-
-    state.history.unshift({
-
-        title,
-        description,
-        type,
-        time:new Date().toISOString()
-
-    });
-
-    state.history =
-        state.history.slice(0,50);
-
-    save();
-
-}
-
-
-function renderHistory(){
-
-    const container =
-        document.getElementById("historyList");
-
-    if(!container) return;
-
-    if(!state.history.length){
-
-        container.innerHTML = `
-            <div class="card">
-                <p>No transactions yet.</p>
-            </div>
-        `;
-
-        return;
-    }
-
-    container.innerHTML = "";
-
-    state.history.forEach(item => {
-
-        const div =
-            document.createElement("div");
-
-        div.className =
-            "history-item";
-
-        div.innerHTML = `
-
-            <div class="history-left">
-
-                <strong>${item.title}</strong>
-
-                <small>
-                    ${item.description}
-                </small>
-
-                <small>
-                    ${new Date(item.time).toLocaleString()}
-                </small>
-
-            </div>
-
-            <div class="history-amount">
-                ${item.type}
-            </div>
-
-        `;
-
-        container.appendChild(div);
-
-    });
-
-}
-
-
-/* ==========================================
-   COPY WALLET
-========================================== */
-
-function copyWallet(){
-
-    navigator.clipboard
-        .writeText(PROJECT_WALLET)
-        .then(() => {
-
-            showModal(
-                "Copied",
-                "BEP20 USDT wallet address copied successfully."
-            );
-
-        });
-
-}
-
-
-/* ==========================================
-   COPY REFERRAL
-========================================== */
-
-function copyReferral(){
-
-    const link =
-        document.getElementById("referralLink")
-        .textContent;
-
-    if(link.includes("will appear")){
-
-        showModal(
-            "Telegram Required",
-            "The referral link will be generated after Telegram Mini App authentication is connected."
-        );
-
-        return;
-    }
-
-    navigator.clipboard
-        .writeText(link);
-
-}
-
-
-/* ==========================================
-   DEPOSIT
-========================================== */
-
-function submitDeposit(){
-
-    const hash =
-        document.getElementById("txHash")
-        .value.trim();
-
-    if(!hash){
-
-        showModal(
-            "Transaction Required",
-            "Enter the BSC transaction hash."
-        );
-
-        return;
-    }
-
-    addHistory(
-        "Deposit Submitted",
-        "TX: " + hash,
-        "PENDING"
-    );
-
-    document.getElementById("txHash")
-        .value = "";
-
-    showModal(
-        "Deposit Submitted",
-        "Your transaction has been recorded as PENDING.\n\nBalance will only be credited after backend blockchain verification."
-    );
-
-}
-
-
-/* ==========================================
-   WITHDRAW
-========================================== */
-
-function requestWithdraw(){
-
-    const address =
-        document.getElementById("withdrawAddress")
-        .value.trim();
-
-    const amount =
-        Number(
-            document.getElementById("withdrawAmount")
-            .value
-        );
-
-    if(!address){
-
-        showModal(
-            "Wallet Required",
-            "Enter your BEP20 wallet address."
-        );
-
-        return;
-    }
-
-    if(!amount || amount <= 0){
-
-        showModal(
-            "Invalid Amount",
-            "Enter a valid withdrawal amount."
-        );
-
-        return;
-    }
-
-    if(amount > state.balance){
-
-        showModal(
-            "Insufficient Balance",
-            "Your available balance is " +
-            money(state.balance) +
-            "."
-        );
-
-        return;
-    }
-
-    addHistory(
-        "Withdrawal Requested",
-        amount.toFixed(2) +
-        " USD → " +
-        address,
-        "PENDING"
-    );
-
-    document.getElementById("withdrawAddress")
-        .value = "";
-
-    document.getElementById("withdrawAmount")
-        .value = "";
-
-    showModal(
-        "Withdrawal Submitted",
-        "Your withdrawal request is pending backend verification."
-    );
-
-}
-
-
-/* ==========================================
-   MODAL
-========================================== */
-
-function showModal(title,text){
-
-    document.getElementById("modalTitle")
-        .textContent = title;
-
-    document.getElementById("modalText")
-        .textContent = text;
-
-    document.getElementById("modal")
-        .classList.add("show");
-
-}
 
 
 <script>
@@ -1777,28 +962,23 @@ const PROJECT_WALLET = "0x057b07157577C7B30800a2eE7df6f1d72B2D389a";
 /* ==========================================
    LOCAL STATE
 ========================================== */
-let state = JSON.parse(
-    localStorage.getItem("minerGarageState") || "null"
-);
+localStorage.removeItem("minerGarageState"); // پاکسازی حالت قدیمی برای فعال‌سازی مجدد و روان
 
-if(!state){
-    state = {
-        balance: 0,
-        starterCredit: 0.30,
-        activeMiner: "sneaker", // فعال‌سازی خودکار کتانی در اولین ورود
-        miningStarted: Date.now(),
-        mined: 0,
-        totalEarned: 0,
-        referrals: 0,
-        history: [{
-            title: "Starter Sneaker Auto-Activated",
-            description: "$0.30 Bonus Applied",
-            type: "BONUS",
-            time: new Date().toISOString()
-        }]
-    };
-    save();
-}
+let state = {
+    balance: 0,
+    starterCredit: 0.30,
+    activeMiner: "sneaker",
+    miningStarted: Date.now(),
+    mined: 0,
+    totalEarned: 0,
+    referrals: 0,
+    history: [{
+        title: "Starter Sneaker Activated",
+        description: "$0.30 Starter Bonus Active",
+        type: "BONUS",
+        time: new Date().toISOString()
+    }]
+};
 
 function save(){
     localStorage.setItem("minerGarageState", JSON.stringify(state));
@@ -2049,13 +1229,8 @@ function initTelegram(){
     }
 }
 
-// اگر از قبل ماینری فعال نبوده، کتانی را خودکار فعال کن
-if(!state.activeMiner){
-    state.activeMiner = "sneaker";
-    state.miningStarted = Date.now();
-    save();
-}
-
+// شروع و بارگذاری اولیه
+save();
 renderMiners();
 renderHistory();
 updateUI();
@@ -2066,7 +1241,6 @@ setInterval(() => {
 }, 1000);
 
 </script>
-
 
 <!-- Telegram WebApp SDK -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
