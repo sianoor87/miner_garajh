@@ -280,8 +280,40 @@ body{
 </div>
 
 <script>
-function activateSneaker(){
-    alert("Sneaker activation will be connected to the real mining system in the next step.");
+function activateSneaker() {
+    const starterCredit = 0.30;
+    const sneakerReward = 0.50;
+
+    // جلوگیری از فعال‌سازی دوباره
+    if (localStorage.getItem("sneakerActivated") === "true") {
+        alert("Your Starter Sneaker is already active.");
+        return;
+    }
+
+    // فعال‌سازی کفش
+    localStorage.setItem("sneakerActivated", "true");
+    localStorage.setItem("starterCredit", "0.00");
+    localStorage.setItem("activeMiner", "Starter Sneaker");
+    localStorage.setItem("miningActive", "true");
+    localStorage.setItem("totalEarned", "0.00");
+
+    // تغییر ظاهر دکمه
+    const button = document.querySelector("button[onclick='activateSneaker()']");
+
+    if (button) {
+        button.innerText = "✓ SNEAKER ACTIVE";
+        button.disabled = true;
+        button.style.opacity = "0.6";
+        button.style.cursor = "not-allowed";
+    }
+
+    // نمایش پیام
+    alert(
+        "Starter Sneaker activated successfully!\n\n" +
+        "Activation Credit: $0.30\n" +
+        "Monthly Reward: $0.50\n" +
+        "Mining Status: ACTIVE"
+    );
 }
 </script>
 
