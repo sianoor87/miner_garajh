@@ -1710,80 +1710,363 @@ function showModal(title,text){
 }
 
 
-function closeModal(){
-
-    document.getElementById("modal")
-        .classList.remove("show");
-
-}
-
+<script>
 
 /* ==========================================
-   TELEGRAM MINI APP
+   MINER DATA
 ========================================== */
 
-function initTelegram(){
+const miners = [
+    {
+        id:"sneaker",
+        name:"Starter Sneaker",
+        icon:"👟",
+        price:0.30,
+        reward:0.50,
+        starter:true
+    },
+    {
+        id:"bicycle",
+        name:"Bicycle",
+        icon:"🚲",
+        price:0.50,
+        reward:1.50
+    },
+    {
+        id:"basic-motorcycle",
+        name:"Basic Motorcycle",
+        icon:"🏍️",
+        price:1.00,
+        reward:3.00
+    },
+    {
+        id:"professional-motorcycle",
+        name:"Professional Motorcycle",
+        icon:"🏍️",
+        price:3.00,
+        reward:5.00
+    },
+    {
+        id:"standard-car",
+        name:"Standard Car",
+        icon:"🚗",
+        price:5.00,
+        reward:8.00
+    },
+    {
+        id:"professional-car",
+        name:"Professional Car",
+        icon:"🚘",
+        price:7.00,
+        reward:11.00
+    },
+    {
+        id:"luxury-truck",
+        name:"Luxury Heavy Truck",
+        icon:"🚛",
+        price:10.00,
+        reward:15.00
+    }
+];
 
-    if(
-        window.Telegram &&
-        window.Telegram.WebApp
-    ){
+/* ==========================================
+   BSC WALLET (BEP20)
+========================================== */
+const PROJECT_WALLET = "0x057b07157577C7B30800a2eE7df6f1d72B2D389a";
 
-        const tg =
-            window.Telegram.WebApp;
+/* ==========================================
+   LOCAL STATE
+========================================== */
+let state = JSON.parse(
+    localStorage.getItem("minerGarageState") || "null"
+);
 
-        tg.ready();
+if(!state){
+    state = {
+        balance: 0,
+        starterCredit: 0.30,
+        activeMiner: "sneaker", // فعال‌سازی خودکار کتانی در اولین ورود
+        miningStarted: Date.now(),
+        mined: 0,
+        totalEarned: 0,
+        referrals: 0,
+        history: [{
+            title: "Starter Sneaker Auto-Activated",
+            description: "$0.30 Bonus Applied",
+            type: "BONUS",
+            time: new Date().toISOString()
+        }]
+    };
+    save();
+}
 
-        tg.expand();
+function save(){
+    localStorage.setItem("minerGarageState", JSON.stringify(state));
+}
 
-        if(tg.initDataUnsafe &&
-           tg.initDataUnsafe.user){
+function money(value){
+    return "$" + Number(value).toFixed(2);
+}
 
-            const user =
-                tg.initDataUnsafe.user;
+function showPage(page, button){
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    document.getElementById(page).classList.add("active");
+    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+    if(button){
+        button.classList.add("active");
+    }
+    window.scrollTo({ top:0, behavior:"smooth" });
+}
 
-            document.getElementById("profileName")
-                .textContent =
-                (
-                    user.first_name || ""
-                ) +
-                (
-                    user.last_name
-                    ? " " + user.last_name
-                    : ""
-                );
+function renderMiners(){
+    const containers = [
+        document.getElementById("homeMiners"),
+        document.getElementById("allMiners")
+    ];
 
-            document.getElementById("profileId")
-                .textContent =
-                "Telegram ID: " +
-                user.id;
+    containers.forEach(container => {
+        if(!container) return;
+        container.innerHTML = "";
 
-        }
+        miners.forEach(miner => {
+            const active = state.activeMiner === miner.id;
+            const card = document.createElement("div");
+            card.className = "miner-card";
+            card.innerHTML = `
+                <div class="miner-main">
+                    <div class="miner-icon">${miner.icon}</div>
+                    <div class="miner-info">
+                        <div class="miner-name">${miner.name}</div>
+                        <div class="miner-price">Activation: ${money(miner.price)}</div>
+                        <div class="miner-reward">Monthly reward: ${money(miner.reward)}</div>
+                    </div>
+                    <button class="buy-btn" onclick="selectMiner('${miner.id}')" ${active ? "disabled" : ""}>
+                        ${active ? "ACTIVE" : miner.starter ? "START" : "BUY"}
+                    </button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    });
+}
 
+function activateSneaker(){
+    if(state.activeMiner === "sneaker"){
+        showModal("Miner Active", "Starter Sneaker is already mining!");
+        return;
+    }
+    state.activeMiner = "sneaker";
+    state.miningStarted = Date.now();
+    state.mined = 0;
+    save();
+    updateUI();
+}
+
+function selectMiner(id){
+    if(id === "sneaker"){
+        activateSneaker();
+        return;
+    }
+    const miner = miners.find(m => m.id === id);
+    if(!miner) return;
+
+    showModal(
+        miner.name,
+        "Activation price: " + money(miner.price) +
+        "\n\nMonthly reward: " + money(miner.reward) +
+        "\n\nSend USDT (BEP20) to deposit address to buy this miner."
+    );
+}
+
+function updateMining(){
+    if(!state.activeMiner || !state.miningStarted) return;
+
+    const miner = miners.find(m => m.id === state.activeMiner);
+    if(!miner) return;
+
+    const now = Date.now();
+    const elapsed = Math.max(0, now - state.miningStarted);
+    const seconds = elapsed / 1000;
+    const monthlySeconds = 30 * 24 * 60 * 60;
+
+    const earned = miner.reward * (seconds / monthlySeconds);
+    state.mined = earned;
+}
+
+function getMiningTime(){
+    if(!state.miningStarted) return "00:00:00";
+
+    const elapsed = Math.max(0, Date.now() - state.miningStarted);
+    const totalSeconds = Math.floor(elapsed / 1000);
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    const pad = n => String(n).padStart(2,"0");
+    if(days > 0){
+        return days + "d " + pad(hours) + ":" + pad(minutes) + ":" + pad(seconds);
+    }
+    return pad(hours) + ":" + pad(minutes) + ":" + pad(seconds);
+}
+
+function updateUI(){
+    updateMining();
+
+    document.getElementById("balance").textContent = money(state.balance);
+    document.getElementById("withdrawBalance").textContent = money(state.balance);
+    document.getElementById("totalEarned").textContent = money(state.totalEarned + state.mined);
+
+    const activeMinerObj = miners.find(m => m.id === state.activeMiner);
+    const minerName = activeMinerObj ? activeMinerObj.name : "None";
+
+    document.getElementById("profileMiner").textContent = minerName;
+    document.getElementById("activeMiner").textContent = minerName;
+    document.getElementById("mined").textContent = "$" + Number(state.mined).toFixed(6);
+    document.getElementById("miningTime").textContent = getMiningTime();
+
+    const active = !!state.activeMiner;
+    document.getElementById("miningStatus").textContent = active ? "ACTIVE" : "INACTIVE";
+    document.getElementById("status").textContent = active ? "MINING ACTIVE" : "INACTIVE";
+    document.getElementById("status").classList.toggle("active", active);
+    document.getElementById("hero").classList.toggle("active", active);
+    document.getElementById("sneaker").classList.toggle("mining", state.activeMiner === "sneaker");
+
+    const button = document.getElementById("activateBtn");
+    if(state.activeMiner === "sneaker"){
+        button.textContent = "✓ MINING ACTIVE";
+        button.disabled = true;
+    } else {
+        button.textContent = "ACTIVATE SNEAKER";
+        button.disabled = false;
     }
 
+    let progress = 0;
+    if(state.miningStarted){
+        const elapsed = Date.now() - state.miningStarted;
+        const month = 30 * 24 * 60 * 60 * 1000;
+        progress = Math.min(100, (elapsed / month) * 100);
+    }
+    document.getElementById("timerBar").style.width = progress + "%";
+
+    renderMiners();
+    renderHistory();
 }
 
+function addHistory(title, description, type){
+    state.history.unshift({ title, description, type, time: new Date().toISOString() });
+    state.history = state.history.slice(0, 50);
+    save();
+}
 
-/* ==========================================
-   START
-========================================== */
+function renderHistory(){
+    const container = document.getElementById("historyList");
+    if(!container) return;
+
+    if(!state.history || !state.history.length){
+        container.innerHTML = `<div class="card"><p>No transactions yet.</p></div>`;
+        return;
+    }
+
+    container.innerHTML = "";
+    state.history.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "history-item";
+        div.innerHTML = `
+            <div class="history-left">
+                <strong>${item.title}</strong>
+                <small>${item.description}</small>
+                <small>${new Date(item.time).toLocaleString()}</small>
+            </div>
+            <div class="history-amount">${item.type}</div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function copyWallet(){
+    navigator.clipboard.writeText(PROJECT_WALLET).then(() => {
+        showModal("Copied", "BEP20 USDT wallet address copied successfully.");
+    });
+}
+
+function copyReferral(){
+    const link = document.getElementById("referralLink").textContent;
+    if(link.includes("will appear")){
+        showModal("Telegram Required", "Referral link will be available inside Telegram.");
+        return;
+    }
+    navigator.clipboard.writeText(link);
+}
+
+function submitDeposit(){
+    const hash = document.getElementById("txHash").value.trim();
+    if(!hash){
+        showModal("Transaction Required", "Enter the BSC transaction hash.");
+        return;
+    }
+    addHistory("Deposit Submitted", "TX: " + hash, "PENDING");
+    document.getElementById("txHash").value = "";
+    showModal("Deposit Submitted", "Your transaction has been recorded as PENDING.\n\nVerification will be processed.");
+}
+
+function requestWithdraw(){
+    const address = document.getElementById("withdrawAddress").value.trim();
+    const amount = Number(document.getElementById("withdrawAmount").value);
+
+    if(!address || !amount || amount <= 0 || amount > state.balance){
+        showModal("Error", "Check your withdrawal address and balance.");
+        return;
+    }
+
+    addHistory("Withdrawal Requested", amount.toFixed(2) + " USD → " + address, "PENDING");
+    document.getElementById("withdrawAddress").value = "";
+    document.getElementById("withdrawAmount").value = "";
+    showModal("Withdrawal Submitted", "Your request is pending.");
+}
+
+function showModal(title, text){
+    document.getElementById("modalTitle").textContent = title;
+    document.getElementById("modalText").textContent = text;
+    document.getElementById("modal").classList.add("show");
+}
+
+function closeModal(){
+    document.getElementById("modal").classList.remove("show");
+}
+
+function initTelegram(){
+    if(window.Telegram && window.Telegram.WebApp){
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
+        if(tg.initDataUnsafe && tg.initDataUnsafe.user){
+            const user = tg.initDataUnsafe.user;
+            document.getElementById("profileName").textContent = (user.first_name || "") + (user.last_name ? " " + user.last_name : "");
+            document.getElementById("profileId").textContent = "Telegram ID: " + user.id;
+        }
+    }
+}
+
+// اگر از قبل ماینری فعال نبوده، کتانی را خودکار فعال کن
+if(!state.activeMiner){
+    state.activeMiner = "sneaker";
+    state.miningStarted = Date.now();
+    save();
+}
 
 renderMiners();
-
 renderHistory();
-
 updateUI();
-
 initTelegram();
 
 setInterval(() => {
-
     updateUI();
-
 }, 1000);
 
 </script>
+
 
 <!-- Telegram WebApp SDK -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
