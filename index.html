@@ -1,180 +1,544 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Miner Garage</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>MINER GARAGE</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
 body{
-    font-family:Arial,sans-serif;
-    background:#07100d;
-    color:#fff;
+    background:#07110d;
+    color:#f4f7f5;
+    font-family:Arial,Helvetica,sans-serif;
     min-height:100vh;
 }
+
+button{
+    font-family:inherit;
+}
+
 .app{
+    width:100%;
     max-width:480px;
-    margin:auto;
     min-height:100vh;
+    margin:auto;
     background:
-      radial-gradient(circle at 50% 15%,#173d2c 0,#0b1c15 32%,#07100d 70%);
-    padding-bottom:90px;
+        radial-gradient(circle at 50% -10%,rgba(24,103,66,.35),transparent 35%),
+        #07110d;
+    padding-bottom:85px;
 }
+
+/* HEADER */
+
 .header{
-    padding:22px 18px 12px;
+    position:sticky;
+    top:0;
+    z-index:20;
+    height:65px;
+    padding:0 18px;
     display:flex;
-    justify-content:space-between;
     align-items:center;
+    justify-content:space-between;
+    background:rgba(7,17,13,.94);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(255,255,255,.07);
 }
+
 .logo{
-    font-size:22px;
-    font-weight:800;
+    font-weight:900;
+    letter-spacing:1px;
+    font-size:17px;
+}
+
+.logo span{
+    color:#55d99a;
+}
+
+.balance-box{
+    text-align:right;
+}
+
+.balance-label{
+    font-size:9px;
+    color:#87948d;
     letter-spacing:1px;
 }
+
 .balance{
-    background:#13271f;
-    border:1px solid #2e6048;
-    padding:9px 13px;
-    border-radius:14px;
-    font-weight:bold;
+    color:#55d99a;
+    font-weight:800;
+    font-size:17px;
 }
+
+/* CONTENT */
+
+.content{
+    padding:18px;
+}
+
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+}
+
+/* HERO */
+
 .hero{
-    margin:8px 15px;
-    border:1px solid #28543e;
-    border-radius:26px;
-    background:linear-gradient(145deg,#132c21,#091510);
-    padding:20px;
-    box-shadow:0 15px 45px #0008;
-}
-.eyebrow{
-    color:#6ee7a7;
-    font-size:12px;
-    font-weight:bold;
-    letter-spacing:2px;
-}
-.hero h1{
-    margin-top:7px;
-    font-size:28px;
-}
-.sneaker{
-    height:245px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
     position:relative;
+    overflow:hidden;
+    min-height:275px;
+    border-radius:24px;
+    padding:22px;
+    background:
+        radial-gradient(circle at 50% 35%,rgba(72,211,145,.18),transparent 40%),
+        linear-gradient(145deg,#10241b,#09140f);
+    border:1px solid rgba(90,218,157,.16);
+    box-shadow:0 15px 50px rgba(0,0,0,.3);
 }
-.shoe{
-    font-size:125px;
-    filter:drop-shadow(0 20px 25px #000);
-    transform:rotate(-12deg);
+
+.hero.active{
+    border-color:rgba(85,217,154,.45);
 }
-.energy{
-    position:absolute;
-    width:190px;
-    height:190px;
-    border-radius:50%;
-    background:#40e98b18;
-    box-shadow:0 0 55px #40e98b33;
-}
-.credit{
-    background:#10261b;
-    border:1px solid #356f50;
-    border-radius:18px;
-    padding:15px;
-    margin-top:5px;
-}
-.credit-row{
+
+.hero-top{
     display:flex;
     justify-content:space-between;
     align-items:center;
 }
-.green{color:#63e69a}
-.small{font-size:12px;color:#91a69c;margin-top:5px}
+
+.eyebrow{
+    color:#65dca2;
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:2px;
+}
+
+.status{
+    font-size:9px;
+    padding:6px 9px;
+    border-radius:20px;
+    background:#18231e;
+    color:#829089;
+}
+
+.status.active{
+    background:rgba(61,210,137,.14);
+    color:#5fe2a0;
+}
+
+.sneaker{
+    height:120px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:92px;
+    filter:drop-shadow(0 15px 15px rgba(0,0,0,.5));
+    transition:.3s;
+}
+
+.sneaker.mining{
+    animation:miningMove 1.3s infinite alternate ease-in-out;
+}
+
+@keyframes miningMove{
+    from{
+        transform:translateY(0) rotate(-3deg);
+    }
+    to{
+        transform:translateY(-10px) rotate(3deg);
+    }
+}
+
+.hero-title{
+    font-size:23px;
+    font-weight:900;
+}
+
+.hero-sub{
+    margin-top:5px;
+    color:#819089;
+    font-size:12px;
+}
+
 .activate{
     width:100%;
-    margin-top:15px;
+    margin-top:17px;
+    height:48px;
     border:0;
-    border-radius:15px;
-    padding:15px;
-    background:linear-gradient(90deg,#35d982,#7cf3a9);
-    color:#04120b;
+    border-radius:14px;
+    background:linear-gradient(135deg,#49d995,#2a9f69);
+    color:#041009;
+    font-size:13px;
     font-weight:900;
+    cursor:pointer;
+}
+
+.activate:disabled{
+    opacity:.65;
+    cursor:not-allowed;
+}
+
+/* MINING PANEL */
+
+.mining-panel{
+    margin-top:14px;
+    padding:16px;
+    border-radius:18px;
+    background:#0d1c15;
+    border:1px solid rgba(255,255,255,.07);
+}
+
+.mining-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.stat{
+    background:#09140f;
+    border-radius:13px;
+    padding:12px;
+}
+
+.stat-label{
+    color:#77847d;
+    font-size:9px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+}
+
+.stat-value{
+    margin-top:5px;
+    font-weight:800;
     font-size:16px;
 }
-.section{
-    padding:18px 15px 5px;
+
+.green{
+    color:#55d99a;
 }
+
+.timer{
+    margin-top:12px;
+    height:8px;
+    background:#07100c;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.timer-bar{
+    height:100%;
+    width:0%;
+    background:#55d99a;
+    transition:width 1s linear;
+}
+
+/* SECTION */
+
 .section-title{
-    font-size:20px;
+    margin:25px 0 12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.section-title h2{
+    font-size:16px;
+}
+
+.section-title span{
+    color:#64736b;
+    font-size:10px;
+}
+
+/* MINERS */
+
+.miners{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.miner-card{
+    padding:15px;
+    border-radius:18px;
+    background:#0d1c15;
+    border:1px solid rgba(255,255,255,.07);
+}
+
+.miner-main{
+    display:flex;
+    align-items:center;
+    gap:13px;
+}
+
+.miner-icon{
+    width:55px;
+    height:55px;
+    border-radius:15px;
+    background:#14291f;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:31px;
+}
+
+.miner-info{
+    flex:1;
+}
+
+.miner-name{
     font-weight:800;
+    font-size:14px;
+}
+
+.miner-price{
+    margin-top:4px;
+    color:#55d99a;
+    font-size:12px;
+}
+
+.miner-reward{
+    color:#7b8982;
+    font-size:10px;
+    margin-top:3px;
+}
+
+.buy-btn{
+    border:1px solid rgba(85,217,154,.35);
+    background:transparent;
+    color:#55d99a;
+    padding:9px 12px;
+    border-radius:10px;
+    font-size:10px;
+    font-weight:800;
+}
+
+/* CARDS */
+
+.card{
+    padding:18px;
+    border-radius:20px;
+    background:#0d1c15;
+    border:1px solid rgba(255,255,255,.07);
     margin-bottom:12px;
 }
-.vehicles{
-    display:flex;
-    gap:12px;
-    overflow-x:auto;
-    padding-bottom:12px;
+
+.card h3{
+    font-size:16px;
+    margin-bottom:8px;
 }
-.vehicle{
-    min-width:165px;
-    background:#102018;
-    border:1px solid #254936;
-    border-radius:20px;
+
+.card p{
+    color:#7d8a83;
+    font-size:12px;
+    line-height:1.6;
+}
+
+/* WALLET */
+
+.wallet{
+    margin-top:15px;
+    padding:13px;
+    border-radius:13px;
+    background:#07110d;
+    border:1px solid rgba(255,255,255,.08);
+    word-break:break-all;
+    font-size:11px;
+    color:#63dca1;
+    line-height:1.6;
+}
+
+.copy-btn{
+    margin-top:10px;
+    width:100%;
+    height:40px;
+    border-radius:11px;
+    border:1px solid rgba(85,217,154,.3);
+    color:#55d99a;
+    background:transparent;
+    font-weight:800;
+}
+
+/* INPUT */
+
+.input{
+    width:100%;
+    height:48px;
+    border-radius:13px;
+    border:1px solid rgba(255,255,255,.09);
+    background:#07110d;
+    color:white;
+    padding:0 14px;
+    outline:none;
+    margin-top:10px;
+}
+
+.action-btn{
+    width:100%;
+    height:48px;
+    border:0;
+    border-radius:13px;
+    background:#55d99a;
+    color:#06100b;
+    font-weight:900;
+    margin-top:12px;
+}
+
+/* HISTORY */
+
+.history{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.history-item{
+    display:flex;
+    justify-content:space-between;
+    padding:13px;
+    border-radius:13px;
+    background:#0d1c15;
+}
+
+.history-left{
+    font-size:11px;
+}
+
+.history-left small{
+    display:block;
+    margin-top:4px;
+    color:#66746c;
+}
+
+.history-amount{
+    color:#55d99a;
+    font-weight:800;
+    font-size:12px;
+}
+
+/* PROFILE */
+
+.profile-header{
+    text-align:center;
     padding:15px;
 }
-.vehicle-icon{
-    height:105px;
+
+.avatar{
+    width:70px;
+    height:70px;
+    margin:auto;
+    border-radius:50%;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:65px;
+    background:linear-gradient(135deg,#1e6044,#0e2b1e);
+    font-size:30px;
 }
-.vehicle h3{font-size:15px;margin-bottom:8px}
-.price{
-    font-size:20px;
+
+.profile-name{
+    margin-top:10px;
     font-weight:900;
 }
-.reward{
-    color:#65e49a;
-    font-size:12px;
-    margin-top:5px;
+
+.profile-id{
+    margin-top:4px;
+    color:#6d7b73;
+    font-size:10px;
 }
-.lock{
-    margin-top:12px;
-    width:100%;
-    border:1px solid #345443;
-    background:#17291f;
-    color:#91a69c;
-    padding:9px;
-    border-radius:10px;
-}
+
+/* BOTTOM NAV */
+
 .nav{
     position:fixed;
+    z-index:30;
     bottom:0;
     left:50%;
     transform:translateX(-50%);
-    width:min(480px,100%);
-    height:76px;
-    background:#091510ee;
-    backdrop-filter:blur(18px);
-    border-top:1px solid #244634;
+    width:100%;
+    max-width:480px;
+    height:73px;
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    background:rgba(7,17,13,.96);
+    backdrop-filter:blur(15px);
+    border-top:1px solid rgba(255,255,255,.07);
+}
+
+.nav-btn{
+    border:0;
+    background:transparent;
+    color:#627069;
+    font-size:9px;
     display:flex;
-    justify-content:space-around;
+    flex-direction:column;
     align-items:center;
+    justify-content:center;
+    gap:5px;
 }
-.nav-item{
-    color:#71877b;
-    text-align:center;
-    font-size:10px;
+
+.nav-btn span{
+    font-size:19px;
 }
-.nav-item span{
-    display:block;
-    font-size:21px;
-    margin-bottom:4px;
+
+.nav-btn.active{
+    color:#55d99a;
 }
-.nav-item.active{color:#65e49a}
+
+/* MODAL */
+
+.modal{
+    position:fixed;
+    inset:0;
+    z-index:100;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:25px;
+    background:rgba(0,0,0,.7);
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-box{
+    width:100%;
+    max-width:400px;
+    background:#0d1c15;
+    border:1px solid rgba(85,217,154,.2);
+    border-radius:22px;
+    padding:22px;
+}
+
+.modal-box h3{
+    margin-bottom:10px;
+}
+
+.modal-box p{
+    color:#829088;
+    font-size:12px;
+    line-height:1.7;
+}
+
+.close{
+    width:100%;
+    height:43px;
+    margin-top:15px;
+    border-radius:12px;
+    border:0;
+    background:#55d99a;
+    font-weight:900;
+}
 </style>
 </head>
 
@@ -183,139 +547,1274 @@ body{
 <div class="app">
 
 <header class="header">
-    <div class="logo">⛏ MINER GARAGE</div>
-    <div class="balance">$0.00</div>
+    <div class="logo">⛏ MINER <span>GARAGE</span></div>
+
+    <div class="balance-box">
+        <div class="balance-label">AVAILABLE BALANCE</div>
+        <div class="balance" id="balance">$0.00</div>
+    </div>
 </header>
 
-<section class="hero">
+<main class="content">
 
-    <div class="eyebrow">STARTER MINER</div>
-    <h1>Sneaker</h1>
+<!-- HOME -->
 
-    <div class="sneaker">
-        <div class="energy"></div>
-        <div class="shoe">👟</div>
-    </div>
+<section id="home" class="page active">
 
-    <div class="credit">
-        <div class="credit-row">
-            <div>
-                <strong>Starter Credit</strong>
-                <div class="small">Use this credit to activate your first miner</div>
-            </div>
-            <strong class="green">$0.30</strong>
+    <div class="hero" id="hero">
+
+        <div class="hero-top">
+            <div class="eyebrow">STARTER MINER</div>
+            <div class="status" id="status">INACTIVE</div>
         </div>
 
-        <button class="activate" onclick="activateSneaker()">
+        <div class="sneaker" id="sneaker">👟</div>
+
+        <div class="hero-title">Starter Sneaker</div>
+        <div class="hero-sub">
+            Activation $0.30 · Monthly reward $0.50
+        </div>
+
+        <button class="activate" id="activateBtn" onclick="activateSneaker()">
             ACTIVATE SNEAKER
         </button>
+
+    </div>
+
+    <div class="mining-panel">
+
+        <div class="mining-grid">
+
+            <div class="stat">
+                <div class="stat-label">Mining Status</div>
+                <div class="stat-value" id="miningStatus">INACTIVE</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">Active Miner</div>
+                <div class="stat-value" id="activeMiner">None</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">Mining Time</div>
+                <div class="stat-value" id="miningTime">00:00:00</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">Mined</div>
+                <div class="stat-value green" id="mined">$0.000000</div>
+            </div>
+
+        </div>
+
+        <div class="timer">
+            <div class="timer-bar" id="timerBar"></div>
+        </div>
+
+    </div>
+
+    <div class="section-title">
+        <h2>Your Garage</h2>
+        <span>7 MINERS</span>
+    </div>
+
+    <div class="miners" id="homeMiners"></div>
+
+</section>
+
+
+<!-- MINERS -->
+
+<section id="miners" class="page">
+
+    <div class="section-title">
+        <h2>Miner Garage</h2>
+        <span>AVAILABLE</span>
+    </div>
+
+    <div class="miners" id="allMiners"></div>
+
+</section>
+
+
+<!-- DEPOSIT -->
+
+<section id="deposit" class="page">
+
+    <div class="section-title">
+        <h2>Deposit</h2>
+        <span>TON NETWORK</span>
+    </div>
+
+    <div class="card">
+
+        <h3>TON Deposit Address</h3>
+
+        <p>
+            Send TON to the wallet address below.
+            Blockchain deposits must be verified by the backend before
+            becoming available balance.
+        </p>
+
+        <div class="wallet" id="walletAddress">
+            UQAkLja7Y_yEYU89mfeRWpBJvIblFEcYMk14LxMK7ivmOyps
+        </div>
+
+        <button class="copy-btn" onclick="copyWallet()">
+            COPY WALLET ADDRESS
+        </button>
+
+    </div>
+
+    <div class="card">
+
+        <h3>Payment Verification</h3>
+
+        <p>
+            After sending TON, enter the transaction hash below.
+            Automatic blockchain verification will be connected to the
+            backend.
+        </p>
+
+        <input
+            class="input"
+            id="txHash"
+            placeholder="TON transaction hash"
+        >
+
+        <button class="action-btn" onclick="submitDeposit()">
+            SUBMIT TRANSACTION
+        </button>
+
     </div>
 
 </section>
 
-<section class="section">
-    <div class="section-title">Garage</div>
 
-    <div class="vehicles">
+<!-- WITHDRAW -->
 
-        <div class="vehicle">
-            <div class="vehicle-icon">🚲</div>
-            <h3>Bicycle</h3>
-            <div class="price">$0.50</div>
-            <div class="reward">$1.50 monthly</div>
-            <button class="lock">LOCKED</button>
+<section id="withdraw" class="page">
+
+    <div class="section-title">
+        <h2>Withdraw</h2>
+        <span>TON</span>
+    </div>
+
+    <div class="card">
+
+        <h3>Available Balance</h3>
+
+        <div style="font-size:28px;font-weight:900;color:#55d99a;margin-top:10px"
+             id="withdrawBalance">
+            $0.00
         </div>
 
-        <div class="vehicle">
-            <div class="vehicle-icon">🛵</div>
-            <h3>Basic Motorcycle</h3>
-            <div class="price">$1.00</div>
-            <div class="reward">$3.00 monthly</div>
-            <button class="lock">LOCKED</button>
+        <input
+            class="input"
+            id="withdrawAddress"
+            placeholder="Your TON wallet address"
+        >
+
+        <input
+            class="input"
+            id="withdrawAmount"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="Amount"
+        >
+
+        <button class="action-btn" onclick="requestWithdraw()">
+            REQUEST WITHDRAWAL
+        </button>
+
+    </div>
+
+    <div class="card">
+        <h3>Important</h3>
+        <p>
+            Withdrawals must be processed and verified by the backend.
+            The frontend does not create or fake blockchain transactions.
+        </p>
+    </div>
+
+</section>
+
+
+<!-- REFERRAL -->
+
+<section id="referral" class="page">
+
+    <div class="section-title">
+        <h2>Referral</h2>
+        <span>INVITE & EARN</span>
+    </div>
+
+    <div class="card">
+
+        <h3>Your Referral Link</h3>
+
+        <div class="wallet" id="referralLink">
+            Telegram referral link will appear here.
         </div>
 
-        <div class="vehicle">
-            <div class="vehicle-icon">🏍️</div>
-            <h3>Professional Motorcycle</h3>
-            <div class="price">$3.00</div>
-            <div class="reward">$5.00 monthly</div>
-            <button class="lock">LOCKED</button>
+        <button class="copy-btn" onclick="copyReferral()">
+            COPY REFERRAL LINK
+        </button>
+
+    </div>
+
+    <div class="mining-grid">
+
+        <div class="stat">
+            <div class="stat-label">Referrals</div>
+            <div class="stat-value" id="referrals">0</div>
         </div>
 
-        <div class="vehicle">
-            <div class="vehicle-icon">🚗</div>
-            <h3>Standard Car</h3>
-            <div class="price">$5.00</div>
-            <div class="reward">$8.00 monthly</div>
-            <button class="lock">LOCKED</button>
-        </div>
-
-        <div class="vehicle">
-            <div class="vehicle-icon">🏎️</div>
-            <h3>Professional Car</h3>
-            <div class="price">$7.00</div>
-            <div class="reward">$11.00 monthly</div>
-            <button class="lock">LOCKED</button>
-        </div>
-
-        <div class="vehicle">
-            <div class="vehicle-icon">🚛</div>
-            <h3>Luxury Heavy Truck</h3>
-            <div class="price">$10.00</div>
-            <div class="reward">$15.00 monthly</div>
-            <button class="lock">LOCKED</button>
+        <div class="stat">
+            <div class="stat-label">Referral Earnings</div>
+            <div class="stat-value green">$0.00</div>
         </div>
 
     </div>
+
 </section>
+
+
+<!-- PROFILE -->
+
+<section id="profile" class="page">
+
+    <div class="section-title">
+        <h2>Profile</h2>
+        <span>ACCOUNT</span>
+    </div>
+
+    <div class="card profile-header">
+
+        <div class="avatar">⛏️</div>
+
+        <div class="profile-name" id="profileName">
+            Miner
+        </div>
+
+        <div class="profile-id" id="profileId">
+            Telegram ID: Not connected
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h3>Account Statistics</h3>
+
+        <div class="mining-grid" style="margin-top:12px">
+
+            <div class="stat">
+                <div class="stat-label">Total Earned</div>
+                <div class="stat-value green" id="totalEarned">
+                    $0.00
+                </div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">Active Miner</div>
+                <div class="stat-value" id="profileMiner">
+                    None
+                </div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">Referrals</div>
+                <div class="stat-value">
+                    <span id="profileReferrals">0</span>
+                </div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">Account Status</div>
+                <div class="stat-value green">ACTIVE</div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- HISTORY -->
+
+<section id="history" class="page">
+
+    <div class="section-title">
+        <h2>Transaction History</h2>
+        <span>RECENT</span>
+    </div>
+
+    <div class="history" id="historyList">
+
+        <div class="card">
+            <p>No transactions yet.</p>
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- NAV -->
 
 <nav class="nav">
-    <div class="nav-item active"><span>🏠</span>Home</div>
-    <div class="nav-item"><span>⛏️</span>Miners</div>
-    <div class="nav-item"><span>💳</span>Deposit</div>
-    <div class="nav-item"><span>💰</span>Withdraw</div>
-    <div class="nav-item"><span>👥</span>Referral</div>
+
+    <button class="nav-btn active" onclick="showPage('home',this)">
+        <span>🏠</span>
+        HOME
+    </button>
+
+    <button class="nav-btn" onclick="showPage('miners',this)">
+        <span>🚘</span>
+        MINERS
+    </button>
+
+    <button class="nav-btn" onclick="showPage('deposit',this)">
+        <span>💎</span>
+        DEPOSIT
+    </button>
+
+    <button class="nav-btn" onclick="showPage('withdraw',this)">
+        <span>💸</span>
+        WITHDRAW
+    </button>
+
+    <button class="nav-btn" onclick="showPage('referral',this)">
+        <span>👥</span>
+        REFERRAL
+    </button>
+
 </nav>
 
 </div>
 
-<script>
-function activateSneaker() {
-    const starterCredit = 0.30;
-    const sneakerReward = 0.50;
 
-    // جلوگیری از فعال‌سازی دوباره
-    if (localStorage.getItem("sneakerActivated") === "true") {
-        alert("Your Starter Sneaker is already active.");
+<!-- MODAL -->
+
+<div class="modal" id="modal">
+
+    <div class="modal-box">
+
+        <h3 id="modalTitle">Miner Garage</h3>
+
+        <p id="modalText"></p>
+
+        <button class="close" onclick="closeModal()">
+            CLOSE
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* ==========================================
+   MINER DATA
+========================================== */
+
+const miners = [
+
+    {
+        id:"sneaker",
+        name:"Starter Sneaker",
+        icon:"👟",
+        price:0.30,
+        reward:0.50,
+        starter:true
+    },
+
+    {
+        id:"bicycle",
+        name:"Bicycle",
+        icon:"🚲",
+        price:0.50,
+        reward:1.50
+    },
+
+    {
+        id:"basic-motorcycle",
+        name:"Basic Motorcycle",
+        icon:"🏍️",
+        price:1.00,
+        reward:3.00
+    },
+
+    {
+        id:"professional-motorcycle",
+        name:"Professional Motorcycle",
+        icon:"🏍️",
+        price:3.00,
+        reward:5.00
+    },
+
+    {
+        id:"standard-car",
+        name:"Standard Car",
+        icon:"🚗",
+        price:5.00,
+        reward:8.00
+    },
+
+    {
+        id:"professional-car",
+        name:"Professional Car",
+        icon:"🚘",
+        price:7.00,
+        reward:11.00
+    },
+
+    {
+        id:"luxury-truck",
+        name:"Luxury Heavy Truck",
+        icon:"🚛",
+        price:10.00,
+        reward:15.00
+    }
+
+];
+
+
+/* ==========================================
+   TON WALLET
+========================================== */
+
+const PROJECT_WALLET =
+"UQAkLja7Y_yEYU89mfeRWpBJvIblFEcYMk14LxMK7ivmOyps";
+
+
+/* ==========================================
+   LOCAL STATE
+   TEMPORARY FRONTEND STATE ONLY
+========================================== */
+
+let state = JSON.parse(
+    localStorage.getItem("minerGarageState") || "null"
+);
+
+if(!state){
+
+    state = {
+
+        balance:0,
+
+        starterCredit:0.30,
+
+        activeMiner:null,
+
+        miningStarted:null,
+
+        mined:0,
+
+        totalEarned:0,
+
+        referrals:0,
+
+        history:[]
+
+    };
+
+}
+
+
+/* ==========================================
+   SAVE
+========================================== */
+
+function save(){
+
+    localStorage.setItem(
+        "minerGarageState",
+        JSON.stringify(state)
+    );
+
+}
+
+
+/* ==========================================
+   FORMAT
+========================================== */
+
+function money(value){
+
+    return "$" + Number(value).toFixed(2);
+
+}
+
+
+/* ==========================================
+   NAVIGATION
+========================================== */
+
+function showPage(page,button){
+
+    document.querySelectorAll(".page")
+        .forEach(p => p.classList.remove("active"));
+
+    document.getElementById(page)
+        .classList.add("active");
+
+    document.querySelectorAll(".nav-btn")
+        .forEach(b => b.classList.remove("active"));
+
+    if(button){
+        button.classList.add("active");
+    }
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+/* ==========================================
+   RENDER MINERS
+========================================== */
+
+function renderMiners(){
+
+    const containers = [
+        document.getElementById("homeMiners"),
+        document.getElementById("allMiners")
+    ];
+
+    containers.forEach(container => {
+
+        if(!container) return;
+
+        container.innerHTML = "";
+
+        miners.forEach(miner => {
+
+            const active =
+                state.activeMiner === miner.id;
+
+            const card = document.createElement("div");
+
+            card.className = "miner-card";
+
+            card.innerHTML = `
+
+                <div class="miner-main">
+
+                    <div class="miner-icon">
+                        ${miner.icon}
+                    </div>
+
+                    <div class="miner-info">
+
+                        <div class="miner-name">
+                            ${miner.name}
+                        </div>
+
+                        <div class="miner-price">
+                            Activation: ${money(miner.price)}
+                        </div>
+
+                        <div class="miner-reward">
+                            Monthly reward: ${money(miner.reward)}
+                        </div>
+
+                    </div>
+
+                    <button
+                        class="buy-btn"
+                        onclick="selectMiner('${miner.id}')"
+                        ${active ? "disabled" : ""}
+                    >
+                        ${active ? "ACTIVE" : miner.starter ? "START" : "BUY"}
+                    </button>
+
+                </div>
+            `;
+
+            container.appendChild(card);
+
+        });
+
+    });
+
+}
+
+
+/* ==========================================
+   ACTIVATE SNEAKER
+========================================== */
+
+function activateSneaker(){
+
+    if(state.activeMiner){
+
+        showModal(
+            "Miner Already Active",
+            "Only one miner can be active at a time."
+        );
+
         return;
     }
 
-    // فعال‌سازی کفش
-    localStorage.setItem("sneakerActivated", "true");
-    localStorage.setItem("starterCredit", "0.00");
-    localStorage.setItem("activeMiner", "Starter Sneaker");
-    localStorage.setItem("miningActive", "true");
-    localStorage.setItem("totalEarned", "0.00");
+    if(state.starterCredit < 0.30){
 
-    // تغییر ظاهر دکمه
-    const button = document.querySelector("button[onclick='activateSneaker()']");
+        showModal(
+            "Starter Credit Unavailable",
+            "The $0.30 starter activation credit has already been used."
+        );
 
-    if (button) {
-        button.innerText = "✓ SNEAKER ACTIVE";
-        button.disabled = true;
-        button.style.opacity = "0.6";
-        button.style.cursor = "not-allowed";
+        return;
     }
 
-    // نمایش پیام
-    alert(
-        "Starter Sneaker activated successfully!\n\n" +
-        "Activation Credit: $0.30\n" +
-        "Monthly Reward: $0.50\n" +
-        "Mining Status: ACTIVE"
+    state.starterCredit = 0;
+
+    state.activeMiner = "sneaker";
+
+    state.miningStarted = Date.now();
+
+    state.mined = 0;
+
+    save();
+
+    addHistory(
+        "Starter Sneaker Activated",
+        "$0.30 starter credit used",
+        "ACTIVATION"
     );
+
+    updateUI();
+
+    showModal(
+        "MINING STARTED",
+        "Your Starter Sneaker is now active.\n\n" +
+        "Activation: $0.30\n" +
+        "Monthly reward: $0.50\n\n" +
+        "Mining timer has started."
+    );
+
 }
+
+
+/* ==========================================
+   SELECT MINER
+========================================== */
+
+function selectMiner(id){
+
+    if(id === "sneaker"){
+
+        activateSneaker();
+
+        return;
+    }
+
+    const miner =
+        miners.find(m => m.id === id);
+
+    if(!miner) return;
+
+    if(state.activeMiner){
+
+        showModal(
+            "Miner Already Active",
+            "Deactivate or finish the current miner before activating another one."
+        );
+
+        return;
+    }
+
+    showModal(
+        miner.name,
+        "Activation price: " +
+        money(miner.price) +
+        "\n\nMonthly reward: " +
+        money(miner.reward) +
+        "\n\nPurchase verification will be connected to the real TON payment system through the backend."
+    );
+
+}
+
+
+/* ==========================================
+   MINING CALCULATION
+========================================== */
+
+function updateMining(){
+
+    if(!state.activeMiner ||
+       !state.miningStarted){
+
+        return;
+    }
+
+    const miner =
+        miners.find(m => m.id === state.activeMiner);
+
+    if(!miner) return;
+
+    const now = Date.now();
+
+    const elapsed =
+        Math.max(0, now - state.miningStarted);
+
+    const seconds =
+        elapsed / 1000;
+
+    const monthlySeconds =
+        30 * 24 * 60 * 60;
+
+    const earned =
+        miner.reward *
+        (seconds / monthlySeconds);
+
+    state.mined = earned;
+
+    updateUI();
+
+}
+
+
+/* ==========================================
+   TIMER
+========================================== */
+
+function getMiningTime(){
+
+    if(!state.miningStarted){
+
+        return "00:00:00";
+    }
+
+    const elapsed =
+        Math.max(
+            0,
+            Date.now() - state.miningStarted
+        );
+
+    const totalSeconds =
+        Math.floor(elapsed / 1000);
+
+    const days =
+        Math.floor(totalSeconds / 86400);
+
+    const hours =
+        Math.floor(
+            (totalSeconds % 86400) / 3600
+        );
+
+    const minutes =
+        Math.floor(
+            (totalSeconds % 3600) / 60
+        );
+
+    const seconds =
+        totalSeconds % 60;
+
+    const pad =
+        n => String(n).padStart(2,"0");
+
+    if(days > 0){
+
+        return (
+            days + "d " +
+            pad(hours) + ":" +
+            pad(minutes) + ":" +
+            pad(seconds)
+        );
+
+    }
+
+    return (
+        pad(hours) + ":" +
+        pad(minutes) + ":" +
+        pad(seconds)
+    );
+
+}
+
+
+/* ==========================================
+   UI UPDATE
+========================================== */
+
+function updateUI(){
+
+    updateMining();
+
+    document.getElementById("balance")
+        .textContent =
+        money(state.balance);
+
+    document.getElementById("withdrawBalance")
+        .textContent =
+        money(state.balance);
+
+    document.getElementById("totalEarned")
+        .textContent =
+        money(state.totalEarned + state.mined);
+
+    document.getElementById("profileMiner")
+        .textContent =
+        state.activeMiner
+        ? miners.find(m => m.id === state.activeMiner)?.name
+        : "None";
+
+    document.getElementById("activeMiner")
+        .textContent =
+        state.activeMiner
+        ? miners.find(m => m.id === state.activeMiner)?.name
+        : "None";
+
+    document.getElementById("mined")
+        .textContent =
+        "$" + Number(state.mined).toFixed(6);
+
+    document.getElementById("miningTime")
+        .textContent =
+        getMiningTime();
+
+    document.getElementById("referrals")
+        .textContent =
+        state.referrals;
+
+    document.getElementById("profileReferrals")
+        .textContent =
+        state.referrals;
+
+    const active =
+        !!state.activeMiner;
+
+    document.getElementById("miningStatus")
+        .textContent =
+        active ? "ACTIVE" : "INACTIVE";
+
+    document.getElementById("status")
+        .textContent =
+        active ? "MINING ACTIVE" : "INACTIVE";
+
+    document.getElementById("status")
+        .classList.toggle("active",active);
+
+    document.getElementById("hero")
+        .classList.toggle("active",active);
+
+    document.getElementById("sneaker")
+        .classList.toggle(
+            "mining",
+            state.activeMiner === "sneaker"
+        );
+
+    const button =
+        document.getElementById("activateBtn");
+
+    if(state.activeMiner === "sneaker"){
+
+        button.textContent =
+            "✓ MINING ACTIVE";
+
+        button.disabled = true;
+
+    }else{
+
+        button.textContent =
+            "ACTIVATE SNEAKER";
+
+        button.disabled = false;
+
+    }
+
+    /*
+       Visual progress through the first 30 days.
+    */
+
+    let progress = 0;
+
+    if(state.miningStarted){
+
+        const elapsed =
+            Date.now() - state.miningStarted;
+
+        const month =
+            30 * 24 * 60 * 60 * 1000;
+
+        progress =
+            Math.min(100,(elapsed/month)*100);
+
+    }
+
+    document.getElementById("timerBar")
+        .style.width =
+        progress + "%";
+
+    renderMiners();
+
+    renderHistory();
+
+}
+
+
+/* ==========================================
+   HISTORY
+========================================== */
+
+function addHistory(title,description,type){
+
+    state.history.unshift({
+
+        title,
+        description,
+        type,
+        time:new Date().toISOString()
+
+    });
+
+    state.history =
+        state.history.slice(0,50);
+
+    save();
+
+}
+
+
+function renderHistory(){
+
+    const container =
+        document.getElementById("historyList");
+
+    if(!container) return;
+
+    if(!state.history.length){
+
+        container.innerHTML = `
+            <div class="card">
+                <p>No transactions yet.</p>
+            </div>
+        `;
+
+        return;
+    }
+
+    container.innerHTML = "";
+
+    state.history.forEach(item => {
+
+        const div =
+            document.createElement("div");
+
+        div.className =
+            "history-item";
+
+        div.innerHTML = `
+
+            <div class="history-left">
+
+                <strong>${item.title}</strong>
+
+                <small>
+                    ${item.description}
+                </small>
+
+                <small>
+                    ${new Date(item.time).toLocaleString()}
+                </small>
+
+            </div>
+
+            <div class="history-amount">
+                ${item.type}
+            </div>
+
+        `;
+
+        container.appendChild(div);
+
+    });
+
+}
+
+
+/* ==========================================
+   COPY WALLET
+========================================== */
+
+function copyWallet(){
+
+    navigator.clipboard
+        .writeText(PROJECT_WALLET)
+        .then(() => {
+
+            showModal(
+                "Copied",
+                "TON wallet address copied successfully."
+            );
+
+        });
+
+}
+
+
+/* ==========================================
+   COPY REFERRAL
+========================================== */
+
+function copyReferral(){
+
+    const link =
+        document.getElementById("referralLink")
+        .textContent;
+
+    if(link.includes("will appear")){
+
+        showModal(
+            "Telegram Required",
+            "The referral link will be generated after Telegram Mini App authentication is connected."
+        );
+
+        return;
+    }
+
+    navigator.clipboard
+        .writeText(link);
+
+}
+
+
+/* ==========================================
+   DEPOSIT
+========================================== */
+
+function submitDeposit(){
+
+    const hash =
+        document.getElementById("txHash")
+        .value.trim();
+
+    if(!hash){
+
+        showModal(
+            "Transaction Required",
+            "Enter the TON transaction hash."
+        );
+
+        return;
+    }
+
+    /*
+       IMPORTANT:
+       Do NOT credit balance here.
+       Backend must verify the transaction on TON blockchain.
+    */
+
+    addHistory(
+        "Deposit Submitted",
+        "TX: " + hash,
+        "PENDING"
+    );
+
+    document.getElementById("txHash")
+        .value = "";
+
+    showModal(
+        "Deposit Submitted",
+        "Your transaction has been recorded as PENDING.\n\nBalance will only be credited after backend blockchain verification."
+    );
+
+}
+
+
+/* ==========================================
+   WITHDRAW
+========================================== */
+
+function requestWithdraw(){
+
+    const address =
+        document.getElementById("withdrawAddress")
+        .value.trim();
+
+    const amount =
+        Number(
+            document.getElementById("withdrawAmount")
+            .value
+        );
+
+    if(!address){
+
+        showModal(
+            "Wallet Required",
+            "Enter your TON wallet address."
+        );
+
+        return;
+    }
+
+    if(!amount || amount <= 0){
+
+        showModal(
+            "Invalid Amount",
+            "Enter a valid withdrawal amount."
+        );
+
+        return;
+    }
+
+    if(amount > state.balance){
+
+        showModal(
+            "Insufficient Balance",
+            "Your available balance is " +
+            money(state.balance) +
+            "."
+        );
+
+        return;
+    }
+
+    /*
+       Do NOT subtract/complete a withdrawal locally.
+       Backend must validate balance and create the real payout.
+    */
+
+    addHistory(
+        "Withdrawal Requested",
+        amount.toFixed(2) +
+        " USD → " +
+        address,
+        "PENDING"
+    );
+
+    document.getElementById("withdrawAddress")
+        .value = "";
+
+    document.getElementById("withdrawAmount")
+        .value = "";
+
+    showModal(
+        "Withdrawal Submitted",
+        "Your withdrawal request is pending backend verification."
+    );
+
+}
+
+
+/* ==========================================
+   MODAL
+========================================== */
+
+function showModal(title,text){
+
+    document.getElementById("modalTitle")
+        .textContent = title;
+
+    document.getElementById("modalText")
+        .textContent = text;
+
+    document.getElementById("modal")
+        .classList.add("show");
+
+}
+
+
+function closeModal(){
+
+    document.getElementById("modal")
+        .classList.remove("show");
+
+}
+
+
+/* ==========================================
+   TELEGRAM MINI APP
+========================================== */
+
+function initTelegram(){
+
+    if(
+        window.Telegram &&
+        window.Telegram.WebApp
+    ){
+
+        const tg =
+            window.Telegram.WebApp;
+
+        tg.ready();
+
+        tg.expand();
+
+        if(tg.initDataUnsafe &&
+           tg.initDataUnsafe.user){
+
+            const user =
+                tg.initDataUnsafe.user;
+
+            document.getElementById("profileName")
+                .textContent =
+                (
+                    user.first_name || ""
+                ) +
+                (
+                    user.last_name
+                    ? " " + user.last_name
+                    : ""
+                );
+
+            document.getElementById("profileId")
+                .textContent =
+                "Telegram ID: " +
+                user.id;
+
+            /*
+               Referral URL will be generated
+               by the Telegram bot/backend.
+            */
+
+        }
+
+    }
+
+}
+
+
+/* ==========================================
+   START
+========================================== */
+
+renderMiners();
+
+renderHistory();
+
+updateUI();
+
+initTelegram();
+
+
+/*
+   Live mining display.
+
+   The frontend calculates elapsed time only for display.
+   Production balance must be calculated server-side.
+*/
+
+setInterval(() => {
+
+    updateUI();
+
+}1000);
+
 </script>
 
+<!-- Telegram WebApp SDK -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
 </body>
-          </html>
+                                            </html>
