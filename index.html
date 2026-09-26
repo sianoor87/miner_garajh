@@ -315,6 +315,12 @@ button{
     border-radius:10px;
     font-size:10px;
     font-weight:800;
+    cursor:pointer;
+}
+
+.buy-btn:disabled{
+    opacity:0.5;
+    cursor:not-allowed;
 }
 
 /* CARDS */
@@ -383,6 +389,7 @@ button{
     color:#06100b;
     font-weight:900;
     margin-top:12px;
+    cursor:pointer;
 }
 
 /* HISTORY */
@@ -472,6 +479,7 @@ button{
     align-items:center;
     justify-content:center;
     gap:5px;
+    cursor:pointer;
 }
 
 .nav-btn span{
@@ -515,6 +523,7 @@ button{
     color:#829088;
     font-size:12px;
     line-height:1.7;
+    white-space:pre-line;
 }
 
 .close{
@@ -525,6 +534,7 @@ button{
     border:0;
     background:#55d99a;
     font-weight:900;
+    cursor:pointer;
 }
 </style>
 </head>
@@ -550,14 +560,14 @@ button{
     <div class="hero" id="hero">
 
         <div class="hero-top">
-            <div class="eyebrow">STARTER MINER</div>
+            <div class="eyebrow" id="heroEyebrow">STARTER MINER</div>
             <div class="status" id="status">INACTIVE</div>
         </div>
 
         <div class="sneaker" id="sneaker">👟</div>
 
-        <div class="hero-title">Starter Sneaker</div>
-        <div class="hero-sub">
+        <div class="hero-title" id="heroTitle">Starter Sneaker</div>
+        <div class="hero-sub" id="heroSub">
             Activation $0.30 · Monthly reward $0.50
         </div>
 
@@ -1015,12 +1025,31 @@ function selectMiner(id){
     const miner = miners.find(m => m.id === id);
     if(!miner) return;
 
-    showModal(
-        miner.name,
-        "Activation price: " + money(miner.price) +
-        "\n\nMonthly reward: " + money(miner.reward) +
-        "\n\nSend USDT (BEP20) to deposit address to buy this miner."
-    );
+    if(state.activeMiner === id){
+        showModal("Already Active", miner.name + " is currently active.");
+        return;
+    }
+
+    if(state.balance >= miner.price){
+        // خرید انجام می‌شود
+        state.balance -= miner.price;
+        state.activeMiner = miner.id;
+        state.miningStarted = Date.now();
+        state.mined = 0;
+        
+        addHistory("Miner Activated", miner.name + " Purchased", "-" + money(miner.price));
+        save();
+        updateUI();
+        
+        showModal("Miner Purchased!", "Successfully activated " + miner.name + "!\n\nMonthly Reward: " + money(miner.reward));
+    } else {
+        showModal(
+            "Insufficient Balance",
+            "Activation price: " + money(miner.price) +
+            "\nYour Balance: " + money(state.balance) +
+            "\n\nPlease deposit USDT (BEP20) to buy this miner."
+        );
+    }
 }
 
 function updateMining(){
@@ -1079,14 +1108,22 @@ function updateUI(){
     document.getElementById("status").textContent = active ? "MINING ACTIVE" : "INACTIVE";
     document.getElementById("status").classList.toggle("active", active);
     document.getElementById("hero").classList.toggle("active", active);
-    document.getElementById("sneaker").classList.toggle("mining", state.activeMiner === "sneaker");
+
+    // به‌روزرسانی بخش اصلی Home بر اساس ماشین فعال
+    if(activeMinerObj){
+        document.getElementById("heroEyebrow").textContent = activeMinerObj.name.toUpperCase();
+        document.getElementById("heroTitle").textContent = activeMinerObj.name;
+        document.getElementById("heroSub").textContent = "Monthly reward " + money(activeMinerObj.reward);
+        document.getElementById("sneaker").textContent = activeMinerObj.icon;
+        document.getElementById("sneaker").classList.add("mining");
+    }
 
     const button = document.getElementById("activateBtn");
     if(state.activeMiner === "sneaker"){
         button.textContent = "✓ MINING ACTIVE";
         button.disabled = true;
     } else {
-        button.textContent = "ACTIVATE SNEAKER";
+        button.textContent = "SWITCH TO STARTER";
         button.disabled = false;
     }
 
