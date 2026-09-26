@@ -960,11 +960,9 @@ const miners = [
 const PROJECT_WALLET = "0x057b07157577C7B30800a2eE7df6f1d72B2D389a";
 
 /* ==========================================
-   LOCAL STATE
+   LOCAL STATE (بازخوانی از حافظه بدون ریست)
 ========================================== */
-localStorage.removeItem("minerGarageState"); // پاکسازی حالت قدیمی برای فعال‌سازی مجدد و روان
-
-let state = {
+const defaultState = {
     balance: 0,
     starterCredit: 0.30,
     activeMiner: "sneaker",
@@ -979,6 +977,9 @@ let state = {
         time: new Date().toISOString()
     }]
 };
+
+const savedState = localStorage.getItem("minerGarageState");
+let state = savedState ? JSON.parse(savedState) : defaultState;
 
 function save(){
     localStorage.setItem("minerGarageState", JSON.stringify(state));
@@ -1071,6 +1072,7 @@ function updateMining(){
 
     const earned = miner.reward * (seconds / monthlySeconds);
     state.mined = earned;
+    save();
 }
 
 function getMiningTime(){
@@ -1229,7 +1231,7 @@ function initTelegram(){
     }
 }
 
-// شروع و بارگذاری اولیه
+// شروع و بارگذاری اولیه بدون پاکسازی حافظه
 save();
 renderMiners();
 renderHistory();
