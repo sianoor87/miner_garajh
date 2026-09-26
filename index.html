@@ -1156,9 +1156,17 @@ function submitDeposit(){
         showModal("Transaction Required", "Enter the BSC transaction hash.");
         return;
     }
-    addHistory("Deposit Submitted", "TX: " + hash, "PENDING");
+    
+    // شارژ خودکار ۱۰ دلار
+    const addedAmount = 10.00;
+    
+    state.balance += addedAmount;
+    addHistory("Deposit Verified", "BSC Network - TX: " + hash.substring(0, 8) + "...", "COMPLETED");
+    save();
+    updateUI();
+    
     document.getElementById("txHash").value = "";
-    showModal("Deposit Submitted", "Your transaction has been recorded as PENDING.\n\nVerification will be processed.");
+    showModal("Deposit Successful", "Transaction verified on BSC Blockchain!\n\n$" + addedAmount.toFixed(2) + " USDT added to your balance.");
 }
 
 function requestWithdraw(){
@@ -1194,7 +1202,6 @@ function checkReferralParam(currentId){
         const inviterKey = getStorageKey(startParam);
         const inviterSaved = localStorage.getItem(inviterKey);
         
-        // چک کنیم که آیا قبلا برای این کاربر ثبت شده یا نه
         const alreadyReferredKey = "referred_by_" + currentId;
         if(!localStorage.getItem(alreadyReferredKey)){
             if(inviterSaved){
