@@ -736,7 +736,7 @@ button{
         <h3>Your Referral Link</h3>
 
         <div class="wallet" id="referralLink">
-            Telegram referral link will appear here.
+            Generating referral link...
         </div>
 
         <button class="copy-btn" onclick="copyReferral()">
@@ -754,7 +754,7 @@ button{
 
         <div class="stat">
             <div class="stat-label">Referral Earnings</div>
-            <div class="stat-value green">$0.00</div>
+            <div class="stat-value green" id="referralEarnings">$0.00</div>
         </div>
 
     </div>
@@ -895,72 +895,32 @@ button{
 </div>
 
 
+<!-- Telegram WebApp SDK -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
 <script>
+
+/* ==========================================
+   CONFIG
+========================================== */
+const BOT_USERNAME = "miner_garajh_bot";
+const PROJECT_WALLET = "0x057b07157577C7B30800a2eE7df6f1d72B2D389a";
 
 /* ==========================================
    MINER DATA
 ========================================== */
-
 const miners = [
-    {
-        id:"sneaker",
-        name:"Starter Sneaker",
-        icon:"👟",
-        price:0.30,
-        reward:0.50,
-        starter:true
-    },
-    {
-        id:"bicycle",
-        name:"Bicycle",
-        icon:"🚲",
-        price:0.50,
-        reward:1.50
-    },
-    {
-        id:"basic-motorcycle",
-        name:"Basic Motorcycle",
-        icon:"🏍️",
-        price:1.00,
-        reward:3.00
-    },
-    {
-        id:"professional-motorcycle",
-        name:"Professional Motorcycle",
-        icon:"🏍️",
-        price:3.00,
-        reward:5.00
-    },
-    {
-        id:"standard-car",
-        name:"Standard Car",
-        icon:"🚗",
-        price:5.00,
-        reward:8.00
-    },
-    {
-        id:"professional-car",
-        name:"Professional Car",
-        icon:"🚘",
-        price:7.00,
-        reward:11.00
-    },
-    {
-        id:"luxury-truck",
-        name:"Luxury Heavy Truck",
-        icon:"🚛",
-        price:10.00,
-        reward:15.00
-    }
+    { id:"sneaker", name:"Starter Sneaker", icon:"👟", price:0.30, reward:0.50, starter:true },
+    { id:"bicycle", name:"Bicycle", icon:"🚲", price:0.50, reward:1.50 },
+    { id:"basic-motorcycle", name:"Basic Motorcycle", icon:"🏍️", price:1.00, reward:3.00 },
+    { id:"professional-motorcycle", name:"Professional Motorcycle", icon:"🏍️", price:3.00, reward:5.00 },
+    { id:"standard-car", name:"Standard Car", icon:"🚗", price:5.00, reward:8.00 },
+    { id:"professional-car", name:"Professional Car", icon:"🚘", price:7.00, reward:11.00 },
+    { id:"luxury-truck", name:"Luxury Heavy Truck", icon:"🚛", price:10.00, reward:15.00 }
 ];
 
 /* ==========================================
-   BSC WALLET (BEP20)
-========================================== */
-const PROJECT_WALLET = "0x057b07157577C7B30800a2eE7df6f1d72B2D389a";
-
-/* ==========================================
-   LOCAL STATE (بازخوانی از حافظه بدون ریست)
+   LOCAL STATE MANAGEMENT
 ========================================== */
 const defaultState = {
     balance: 0,
@@ -1107,6 +1067,9 @@ function updateUI(){
     document.getElementById("mined").textContent = "$" + Number(state.mined).toFixed(6);
     document.getElementById("miningTime").textContent = getMiningTime();
 
+    document.getElementById("referrals").textContent = state.referrals || 0;
+    document.getElementById("profileReferrals").textContent = state.referrals || 0;
+
     const active = !!state.activeMiner;
     document.getElementById("miningStatus").textContent = active ? "ACTIVE" : "INACTIVE";
     document.getElementById("status").textContent = active ? "MINING ACTIVE" : "INACTIVE";
@@ -1173,12 +1136,14 @@ function copyWallet(){
 }
 
 function copyReferral(){
-    const link = document.getElementById("referralLink").textContent;
-    if(link.includes("will appear")){
-        showModal("Telegram Required", "Referral link will be available inside Telegram.");
+    const link = document.getElementById("referralLink").textContent.trim();
+    if(link.includes("Generating") || link.includes("Open inside")){
+        showModal("Notice", "Please open the Mini App inside Telegram to get your referral link.");
         return;
     }
-    navigator.clipboard.writeText(link);
+    navigator.clipboard.writeText(link).then(() => {
+        showModal("Copied", "Referral link copied to clipboard!");
+    });
 }
 
 function submitDeposit(){
@@ -1225,13 +1190,23 @@ function initTelegram(){
 
         if(tg.initDataUnsafe && tg.initDataUnsafe.user){
             const user = tg.initDataUnsafe.user;
+            const userId = user.id;
+
             document.getElementById("profileName").textContent = (user.first_name || "") + (user.last_name ? " " + user.last_name : "");
-            document.getElementById("profileId").textContent = "Telegram ID: " + user.id;
+            document.getElementById("profileId").textContent = "Telegram ID: " + userId;
+
+            // ساخت لینک رفرال اختصاصی
+            const refLink = "https://t.me/" + BOT_USERNAME + "?start=" + userId;
+            document.getElementById("referralLink").textContent = refLink;
+        } else {
+            document.getElementById("referralLink").textContent = "Open inside Telegram to generate link.";
         }
+    } else {
+        document.getElementById("referralLink").textContent = "Open inside Telegram to generate link.";
     }
 }
 
-// شروع و بارگذاری اولیه بدون پاکسازی حافظه
+// بارگذاری اولیه
 save();
 renderMiners();
 renderHistory();
@@ -1243,9 +1218,6 @@ setInterval(() => {
 }, 1000);
 
 </script>
-
-<!-- Telegram WebApp SDK -->
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 </body>
 </html>
