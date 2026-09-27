@@ -180,11 +180,6 @@ button{
     cursor:pointer;
 }
 
-.activate:disabled{
-    opacity:.65;
-    cursor:not-allowed;
-}
-
 /* MINING PANEL */
 .mining-panel{
     margin-top:14px;
@@ -318,9 +313,14 @@ button{
     cursor:pointer;
 }
 
-.buy-btn:disabled{
-    opacity:0.5;
-    cursor:not-allowed;
+.owned-badge{
+    display:inline-block;
+    background:rgba(85,217,154,.15);
+    color:#55d99a;
+    font-size:10px;
+    padding:2px 6px;
+    border-radius:6px;
+    margin-left:5px;
 }
 
 /* CARDS */
@@ -557,22 +557,22 @@ button{
 <!-- HOME -->
 <section id="home" class="page active">
 
-    <div class="hero" id="hero">
+    <div class="hero active" id="hero">
 
         <div class="hero-top">
-            <div class="eyebrow" id="heroEyebrow">STARTER MINER</div>
-            <div class="status" id="status">INACTIVE</div>
+            <div class="eyebrow" id="heroEyebrow">GARAGE MINING</div>
+            <div class="status active" id="status">MINING ACTIVE</div>
         </div>
 
-        <div class="sneaker" id="sneaker">👟</div>
+        <div class="sneaker mining" id="sneaker">🚛</div>
 
-        <div class="hero-title" id="heroTitle">Starter Sneaker</div>
+        <div class="hero-title" id="heroTitle">Active Mining Fleet</div>
         <div class="hero-sub" id="heroSub">
-            Activation $0.30 · Monthly reward $0.50
+            Total Monthly Speed: $0.00
         </div>
 
-        <button class="activate" id="activateBtn" onclick="activateSneaker()">
-            ACTIVATE SNEAKER
+        <button class="activate" onclick="showPage('miners')">
+            BUY MORE MINERS
         </button>
 
     </div>
@@ -583,12 +583,12 @@ button{
 
             <div class="stat">
                 <div class="stat-label">Mining Status</div>
-                <div class="stat-value" id="miningStatus">INACTIVE</div>
+                <div class="stat-value green" id="miningStatus">ACTIVE</div>
             </div>
 
             <div class="stat">
-                <div class="stat-label">Active Miner</div>
-                <div class="stat-value" id="activeMiner">None</div>
+                <div class="stat-label">Total Owned</div>
+                <div class="stat-value" id="activeMiner">0 Miners</div>
             </div>
 
             <div class="stat">
@@ -611,7 +611,7 @@ button{
 
     <div class="section-title">
         <h2>Your Garage</h2>
-        <span>7 MINERS</span>
+        <span>7 MINERS TYPES</span>
     </div>
 
     <div class="miners" id="homeMiners"></div>
@@ -808,9 +808,9 @@ button{
             </div>
 
             <div class="stat">
-                <div class="stat-label">Active Miner</div>
+                <div class="stat-label">Active Fleet</div>
                 <div class="stat-value" id="profileMiner">
-                    None
+                    0 Miners
                 </div>
             </div>
 
@@ -935,11 +935,15 @@ function loadStateForUser(userId){
     const saved = localStorage.getItem(getStorageKey(userId));
     if(saved){
         state = JSON.parse(saved);
+        // تبدیل ساختار قدیمی به جدید اگر وجود داشته باشد
+        if(!state.ownedMiners){
+            state.ownedMiners = { sneaker: 1 };
+        }
     } else {
         state = {
             balance: 0,
             starterCredit: 0.30,
-            activeMiner: "sneaker",
+            ownedMiners: { sneaker: 1 },
             miningStarted: Date.now(),
             mined: 0,
             totalEarned: 0,
@@ -973,6 +977,29 @@ function showPage(page, button){
     window.scrollTo({ top:0, behavior:"smooth" });
 }
 
+function getTotalMonthlyReward(){
+    let totalReward = 0;
+    if(!state.ownedMiners) return 0;
+    
+    for(let id in state.ownedMiners){
+        const count = state.ownedMiners[id] || 0;
+        const miner = miners.find(m => m.id === id);
+        if(miner){
+            totalReward += miner.reward * count;
+        }
+    }
+    return totalReward;
+}
+
+function getTotalMinersCount(){
+    let total = 0;
+    if(!state.ownedMiners) return 0;
+    for(let id in state.ownedMiners){
+        total += state.ownedMiners[id] || 0;
+    }
+    return total;
+}
+
 function renderMiners(){
     const containers = [
         document.getElementById("homeMiners"),
@@ -984,19 +1011,19 @@ function renderMiners(){
         container.innerHTML = "";
 
         miners.forEach(miner => {
-            const active = state.activeMiner === miner.id;
+            const count = (state.ownedMiners && state.ownedMiners[miner.id]) ? state.ownedMiners[miner.id] : 0;
             const card = document.createElement("div");
             card.className = "miner-card";
             card.innerHTML = `
                 <div class="miner-main">
                     <div class="miner-icon">${miner.icon}</div>
                     <div class="miner-info">
-                        <div class="miner-name">${miner.name}</div>
+                        <div class="miner-name">${miner.name} ${count > 0 ? `<span class="owned-badge">x${count} Owned</span>` : ''}</div>
                         <div class="miner-price">Activation: ${money(miner.price)}</div>
-                        <div class="miner-reward">Monthly reward: ${money(miner.reward)}</div>
+                        <div class="miner-reward">Monthly reward: ${money(miner.reward)} / unit</div>
                     </div>
-                    <button class="buy-btn" onclick="selectMiner('${miner.id}')" ${active ? "disabled" : ""}>
-                        ${active ? "ACTIVE" : miner.starter ? "START" : "BUY"}
+                    <button class="buy-btn" onclick="buyMiner('${miner.id}')">
+                        BUY (+1)
                     </button>
                 </div>
             `;
@@ -1005,47 +1032,31 @@ function renderMiners(){
     });
 }
 
-function activateSneaker(){
-    if(state.activeMiner === "sneaker"){
-        showModal("Miner Active", "Starter Sneaker is already mining!");
-        return;
-    }
-    state.activeMiner = "sneaker";
-    state.miningStarted = Date.now();
-    state.mined = 0;
-    save();
-    updateUI();
-}
-
-function selectMiner(id){
-    if(id === "sneaker"){
-        activateSneaker();
-        return;
-    }
+function buyMiner(id){
     const miner = miners.find(m => m.id === id);
     if(!miner) return;
 
-    if(state.activeMiner === id){
-        showModal("Already Active", miner.name + " is currently active.");
-        return;
-    }
-
     if(state.balance >= miner.price){
-        // خرید انجام می‌شود
         state.balance -= miner.price;
-        state.activeMiner = miner.id;
-        state.miningStarted = Date.now();
-        state.mined = 0;
         
-        addHistory("Miner Activated", miner.name + " Purchased", "-" + money(miner.price));
+        if(!state.ownedMiners){
+            state.ownedMiners = {};
+        }
+        state.ownedMiners[id] = (state.ownedMiners[id] || 0) + 1;
+        
+        addHistory("Miner Purchased", miner.name + " (+1)", "-" + money(miner.price));
         save();
         updateUI();
         
-        showModal("Miner Purchased!", "Successfully activated " + miner.name + "!\n\nMonthly Reward: " + money(miner.reward));
+        const currentCount = state.ownedMiners[id];
+        showModal(
+            "Purchase Successful!", 
+            "Successfully bought another " + miner.name + "!\n\nYou now own: " + currentCount + " unit(s).\nTotal Speed Increased!"
+        );
     } else {
         showModal(
             "Insufficient Balance",
-            "Activation price: " + money(miner.price) +
+            "Price: " + money(miner.price) +
             "\nYour Balance: " + money(state.balance) +
             "\n\nPlease deposit USDT (BEP20) to buy this miner."
         );
@@ -1053,17 +1064,15 @@ function selectMiner(id){
 }
 
 function updateMining(){
-    if(!state.activeMiner || !state.miningStarted) return;
+    if(!state.miningStarted) return;
 
-    const miner = miners.find(m => m.id === state.activeMiner);
-    if(!miner) return;
-
+    const totalReward = getTotalMonthlyReward();
     const now = Date.now();
     const elapsed = Math.max(0, now - state.miningStarted);
     const seconds = elapsed / 1000;
     const monthlySeconds = 30 * 24 * 60 * 60;
 
-    const earned = miner.reward * (seconds / monthlySeconds);
+    const earned = totalReward * (seconds / monthlySeconds);
     state.mined = earned;
     save();
 }
@@ -1092,40 +1101,18 @@ function updateUI(){
     document.getElementById("withdrawBalance").textContent = money(state.balance);
     document.getElementById("totalEarned").textContent = money(state.totalEarned + state.mined);
 
-    const activeMinerObj = miners.find(m => m.id === state.activeMiner);
-    const minerName = activeMinerObj ? activeMinerObj.name : "None";
+    const totalMiners = getTotalMinersCount();
+    const totalReward = getTotalMonthlyReward();
 
-    document.getElementById("profileMiner").textContent = minerName;
-    document.getElementById("activeMiner").textContent = minerName;
+    document.getElementById("profileMiner").textContent = totalMiners + " Units Active";
+    document.getElementById("activeMiner").textContent = totalMiners + " Miners";
+    document.getElementById("heroSub").textContent = "Total Monthly Rate: " + money(totalReward);
+    
     document.getElementById("mined").textContent = "$" + Number(state.mined).toFixed(6);
     document.getElementById("miningTime").textContent = getMiningTime();
 
     document.getElementById("referrals").textContent = state.referrals || 0;
     document.getElementById("profileReferrals").textContent = state.referrals || 0;
-
-    const active = !!state.activeMiner;
-    document.getElementById("miningStatus").textContent = active ? "ACTIVE" : "INACTIVE";
-    document.getElementById("status").textContent = active ? "MINING ACTIVE" : "INACTIVE";
-    document.getElementById("status").classList.toggle("active", active);
-    document.getElementById("hero").classList.toggle("active", active);
-
-    // به‌روزرسانی بخش اصلی Home بر اساس ماشین فعال
-    if(activeMinerObj){
-        document.getElementById("heroEyebrow").textContent = activeMinerObj.name.toUpperCase();
-        document.getElementById("heroTitle").textContent = activeMinerObj.name;
-        document.getElementById("heroSub").textContent = "Monthly reward " + money(activeMinerObj.reward);
-        document.getElementById("sneaker").textContent = activeMinerObj.icon;
-        document.getElementById("sneaker").classList.add("mining");
-    }
-
-    const button = document.getElementById("activateBtn");
-    if(state.activeMiner === "sneaker"){
-        button.textContent = "✓ MINING ACTIVE";
-        button.disabled = true;
-    } else {
-        button.textContent = "SWITCH TO STARTER";
-        button.disabled = false;
-    }
 
     let progress = 0;
     if(state.miningStarted){
@@ -1247,7 +1234,7 @@ function checkReferralParam(currentId){
                 localStorage.setItem(inviterKey, JSON.stringify(inviterState));
             } else {
                 let inviterState = {
-                    balance: 0, starterCredit: 0.30, activeMiner: "sneaker",
+                    balance: 0, starterCredit: 0.30, ownedMiners: { sneaker: 1 },
                     miningStarted: Date.now(), mined: 0, totalEarned: 0, referrals: 1, history: []
                 };
                 localStorage.setItem(inviterKey, JSON.stringify(inviterState));
