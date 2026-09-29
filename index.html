@@ -93,7 +93,7 @@ button{
 .hero{
     position:relative;
     overflow:hidden;
-    min-height:275px;
+    min-height:250px;
     border-radius:24px;
     padding:22px;
     background:
@@ -101,10 +101,7 @@ button{
         linear-gradient(145deg,#10241b,#09140f);
     border:1px solid rgba(90,218,157,.16);
     box-shadow:0 15px 50px rgba(0,0,0,.3);
-}
-
-.hero.active{
-    border-color:rgba(85,217,154,.45);
+    text-align:center;
 }
 
 .hero-top{
@@ -124,40 +121,28 @@ button{
     font-size:9px;
     padding:6px 9px;
     border-radius:20px;
-    background:#18231e;
-    color:#829089;
-}
-
-.status.active{
     background:rgba(61,210,137,.14);
     color:#5fe2a0;
 }
 
 .sneaker{
-    height:120px;
+    height:100px;
     display:flex;
     justify-content:center;
     align-items:center;
-    font-size:92px;
+    font-size:80px;
+    margin:10px 0;
     filter:drop-shadow(0 15px 15px rgba(0,0,0,.5));
-    transition:.3s;
-}
-
-.sneaker.mining{
     animation:miningMove 1.3s infinite alternate ease-in-out;
 }
 
 @keyframes miningMove{
-    from{
-        transform:translateY(0) rotate(-3deg);
-    }
-    to{
-        transform:translateY(-10px) rotate(3deg);
-    }
+    from{ transform:translateY(0) rotate(-3deg); }
+    to{ transform:translateY(-8px) rotate(3deg); }
 }
 
 .hero-title{
-    font-size:23px;
+    font-size:20px;
     font-weight:900;
 }
 
@@ -165,19 +150,6 @@ button{
     margin-top:5px;
     color:#819089;
     font-size:12px;
-}
-
-.activate{
-    width:100%;
-    margin-top:17px;
-    height:48px;
-    border:0;
-    border-radius:14px;
-    background:linear-gradient(135deg,#49d995,#2a9f69);
-    color:#041009;
-    font-size:13px;
-    font-weight:900;
-    cursor:pointer;
 }
 
 /* MINING PANEL */
@@ -211,7 +183,7 @@ button{
 .stat-value{
     margin-top:5px;
     font-weight:800;
-    font-size:16px;
+    font-size:15px;
 }
 
 .green{
@@ -557,38 +529,30 @@ button{
 <!-- HOME -->
 <section id="home" class="page active">
 
-    <div class="hero active" id="hero">
-
+    <div class="hero" id="hero">
         <div class="hero-top">
-            <div class="eyebrow" id="heroEyebrow">GARAGE MINING</div>
-            <div class="status active" id="status">MINING ACTIVE</div>
+            <div class="eyebrow">ACTIVE FLEET</div>
+            <div class="status">MINING ACTIVE</div>
         </div>
 
-        <div class="sneaker mining" id="sneaker">🚛</div>
+        <div class="sneaker" id="heroIcon">👟</div>
 
-        <div class="hero-title" id="heroTitle">Active Mining Fleet</div>
+        <div class="hero-title" id="heroTitle">Garage Mining Fleet</div>
         <div class="hero-sub" id="heroSub">
-            Total Monthly Speed: $0.00
+            Total Monthly Rate: $0.50
         </div>
-
-        <button class="activate" onclick="showPage('miners')">
-            BUY MORE MINERS
-        </button>
-
     </div>
 
     <div class="mining-panel">
-
         <div class="mining-grid">
-
             <div class="stat">
                 <div class="stat-label">Mining Status</div>
-                <div class="stat-value green" id="miningStatus">ACTIVE</div>
+                <div class="stat-value green">ACTIVE</div>
             </div>
 
             <div class="stat">
-                <div class="stat-label">Total Owned</div>
-                <div class="stat-value" id="activeMiner">0 Miners</div>
+                <div class="stat-label">Total Vehicles</div>
+                <div class="stat-value" id="activeMiner">1 Vehicle</div>
             </div>
 
             <div class="stat">
@@ -600,316 +564,170 @@ button{
                 <div class="stat-label">Mined</div>
                 <div class="stat-value green" id="mined">$0.000000</div>
             </div>
-
         </div>
 
         <div class="timer">
             <div class="timer-bar" id="timerBar"></div>
         </div>
-
     </div>
 
     <div class="section-title">
         <h2>Your Garage</h2>
-        <span>7 MINERS TYPES</span>
+        <span>ALL MINERS</span>
     </div>
 
     <div class="miners" id="homeMiners"></div>
 
 </section>
 
-
 <!-- MINERS -->
 <section id="miners" class="page">
-
     <div class="section-title">
         <h2>Miner Garage</h2>
-        <span>AVAILABLE</span>
+        <span>BUY VEHICLES</span>
     </div>
 
     <div class="miners" id="allMiners"></div>
-
 </section>
-
 
 <!-- DEPOSIT -->
 <section id="deposit" class="page">
-
     <div class="section-title">
         <h2>Deposit</h2>
         <span>BSC NETWORK (BEP20)</span>
     </div>
 
     <div class="card">
-
         <h3>USDT (BEP20) Deposit Address</h3>
-
-        <p>
-            Send USDT (BEP20) to the wallet address below.
-            Blockchain deposits must be verified by the backend before
-            becoming available balance.
-        </p>
-
+        <p>Send USDT (BEP20) to the wallet address below.</p>
         <div class="wallet" id="walletAddress">
             0x057b07157577C7B30800a2eE7df6f1d72B2D389a
         </div>
-
-        <button class="copy-btn" onclick="copyWallet()">
-            COPY WALLET ADDRESS
-        </button>
-
+        <button class="copy-btn" onclick="copyWallet()">COPY WALLET ADDRESS</button>
     </div>
 
     <div class="card">
-
         <h3>Payment Verification</h3>
+        <p>Enter deposited amount and BSC transaction hash:</p>
 
-        <p>
-            After sending USDT, enter the BSC transaction hash below.
-            Automatic blockchain verification will be connected to the backend.
-        </p>
+        <input class="input" id="depositAmountInput" type="number" step="0.01" placeholder="Amount Sent in USDT (e.g. 7.00 or 10.00)">
+        <input class="input" id="txHash" placeholder="BSC transaction hash (0x...)">
 
-        <input
-            class="input"
-            id="txHash"
-            placeholder="BSC transaction hash (0x...)"
-        >
-
-        <button class="action-btn" onclick="submitDeposit()">
-            SUBMIT TRANSACTION
-        </button>
-
+        <button class="action-btn" onclick="submitDeposit()">SUBMIT TRANSACTION</button>
     </div>
-
 </section>
-
 
 <!-- WITHDRAW -->
 <section id="withdraw" class="page">
-
     <div class="section-title">
         <h2>Withdraw</h2>
         <span>BEP20</span>
     </div>
 
     <div class="card">
-
         <h3>Available Balance</h3>
-
-        <div style="font-size:28px;font-weight:900;color:#55d99a;margin-top:10px"
-             id="withdrawBalance">
-            $0.00
-        </div>
-
-        <input
-            class="input"
-            id="withdrawAddress"
-            placeholder="Your BEP20 USDT wallet address"
-        >
-
-        <input
-            class="input"
-            id="withdrawAmount"
-            type="number"
-            min="0"
-            step="0.01"
-            placeholder="Amount"
-        >
-
-        <button class="action-btn" onclick="requestWithdraw()">
-            REQUEST WITHDRAWAL
-        </button>
-
+        <div style="font-size:28px;font-weight:900;color:#55d99a;margin-top:10px" id="withdrawBalance">$0.00</div>
+        <input class="input" id="withdrawAddress" placeholder="Your BEP20 USDT wallet address">
+        <input class="input" id="withdrawAmount" type="number" min="0" step="0.01" placeholder="Amount">
+        <button class="action-btn" onclick="requestWithdraw()">REQUEST WITHDRAWAL</button>
     </div>
-
-    <div class="card">
-        <h3>Important</h3>
-        <p>
-            Withdrawals must be processed and verified by the backend.
-            The frontend does not create or fake blockchain transactions.
-        </p>
-    </div>
-
 </section>
-
 
 <!-- REFERRAL -->
 <section id="referral" class="page">
-
     <div class="section-title">
         <h2>Referral</h2>
         <span>INVITE & EARN</span>
     </div>
 
     <div class="card">
-
         <h3>Your Referral Link</h3>
-
-        <div class="wallet" id="referralLink">
-            Generating referral link...
-        </div>
-
-        <button class="copy-btn" onclick="copyReferral()">
-            COPY REFERRAL LINK
-        </button>
-
+        <div class="wallet" id="referralLink">Generating referral link...</div>
+        <button class="copy-btn" onclick="copyReferral()">COPY REFERRAL LINK</button>
     </div>
 
     <div class="mining-grid">
-
         <div class="stat">
             <div class="stat-label">Referrals</div>
             <div class="stat-value" id="referrals">0</div>
         </div>
-
         <div class="stat">
             <div class="stat-label">Referral Earnings</div>
             <div class="stat-value green" id="referralEarnings">$0.00</div>
         </div>
-
     </div>
-
 </section>
-
 
 <!-- PROFILE -->
 <section id="profile" class="page">
-
     <div class="section-title">
         <h2>Profile</h2>
         <span>ACCOUNT</span>
     </div>
 
     <div class="card profile-header">
-
         <div class="avatar">⛏️</div>
-
-        <div class="profile-name" id="profileName">
-            Miner
-        </div>
-
-        <div class="profile-id" id="profileId">
-            Telegram ID: Not connected
-        </div>
-
+        <div class="profile-name" id="profileName">Miner</div>
+        <div class="profile-id" id="profileId">Telegram ID: Not connected</div>
     </div>
 
     <div class="card">
-
         <h3>Account Statistics</h3>
-
         <div class="mining-grid" style="margin-top:12px">
-
             <div class="stat">
                 <div class="stat-label">Total Earned</div>
-                <div class="stat-value green" id="totalEarned">
-                    $0.00
-                </div>
+                <div class="stat-value green" id="totalEarned">$0.00</div>
             </div>
-
             <div class="stat">
-                <div class="stat-label">Active Fleet</div>
-                <div class="stat-value" id="profileMiner">
-                    0 Miners
-                </div>
+                <div class="stat-label">Total Vehicles</div>
+                <div class="stat-value" id="profileMiner">1 Units</div>
             </div>
-
             <div class="stat">
                 <div class="stat-label">Referrals</div>
-                <div class="stat-value">
-                    <span id="profileReferrals">0</span>
-                </div>
+                <div class="stat-value"><span id="profileReferrals">0</span></div>
             </div>
-
             <div class="stat">
-                <div class="stat-label">Account Status</div>
+                <div class="stat-label">Status</div>
                 <div class="stat-value green">ACTIVE</div>
             </div>
-
         </div>
-
     </div>
-
 </section>
-
 
 <!-- HISTORY -->
 <section id="history" class="page">
-
     <div class="section-title">
         <h2>Transaction History</h2>
         <span>RECENT</span>
     </div>
-
-    <div class="history" id="historyList">
-
-        <div class="card">
-            <p>No transactions yet.</p>
-        </div>
-
-    </div>
-
+    <div class="history" id="historyList"></div>
 </section>
 
 </main>
 
-
 <!-- NAV -->
 <nav class="nav">
-
-    <button class="nav-btn active" onclick="showPage('home',this)">
-        <span>🏠</span>
-        HOME
-    </button>
-
-    <button class="nav-btn" onclick="showPage('miners',this)">
-        <span>🚘</span>
-        MINERS
-    </button>
-
-    <button class="nav-btn" onclick="showPage('deposit',this)">
-        <span>💎</span>
-        DEPOSIT
-    </button>
-
-    <button class="nav-btn" onclick="showPage('withdraw',this)">
-        <span>💸</span>
-        WITHDRAW
-    </button>
-
-    <button class="nav-btn" onclick="showPage('referral',this)">
-        <span>👥</span>
-        REFERRAL
-    </button>
-
+    <button class="nav-btn active" onclick="showPage('home',this)"><span>🏠</span>HOME</button>
+    <button class="nav-btn" onclick="showPage('miners',this)"><span>🚘</span>MINERS</button>
+    <button class="nav-btn" onclick="showPage('deposit',this)"><span>💎</span>DEPOSIT</button>
+    <button class="nav-btn" onclick="showPage('withdraw',this)"><span>💸</span>WITHDRAW</button>
+    <button class="nav-btn" onclick="showPage('referral',this)"><span>👥</span>REFERRAL</button>
 </nav>
 
 </div>
 
-
 <!-- MODAL -->
 <div class="modal" id="modal">
-
     <div class="modal-box">
-
         <h3 id="modalTitle">Miner Garage</h3>
-
         <p id="modalText"></p>
-
-        <button class="close" onclick="closeModal()">
-            CLOSE
-        </button>
-
+        <button class="close" onclick="closeModal()">CLOSE</button>
     </div>
-
 </div>
 
-
-<!-- Telegram WebApp SDK -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <script>
-
 const BOT_USERNAME = "miner_garajh_bot";
 const PROJECT_WALLET = "0x057b07157577C7B30800a2eE7df6f1d72B2D389a";
 
@@ -926,6 +744,7 @@ const miners = [
 let currentUserId = "guest";
 let state = {};
 
+// حافظه روی نام اصلی تنظیم شده تا اطلاعات کاربران قدیمی حفظ شود
 function getStorageKey(userId){
     return "minerGarageState_" + userId;
 }
@@ -933,30 +752,52 @@ function getStorageKey(userId){
 function loadStateForUser(userId){
     currentUserId = userId;
     const saved = localStorage.getItem(getStorageKey(userId));
+    
     if(saved){
-        state = JSON.parse(saved);
-        // تبدیل ساختار قدیمی به جدید اگر وجود داشته باشد
-        if(!state.ownedMiners){
-            state.ownedMiners = { sneaker: 1 };
+        try {
+            state = JSON.parse(saved);
+        } catch(e) {
+            state = null;
         }
-    } else {
+    }
+
+    if(!state || typeof state !== "object"){
+        // کاربر جدید که تازه استارت می‌زند
         state = {
             balance: 0,
-            starterCredit: 0.30,
             ownedMiners: { sneaker: 1 },
             miningStarted: Date.now(),
             mined: 0,
             totalEarned: 0,
             referrals: 0,
             history: [{
-                title: "Starter Sneaker Activated",
-                description: "$0.30 Starter Bonus Active",
-                type: "BONUS",
+                title: "Starter Sneaker Active",
+                description: "Free $0.50/mo Bonus Miner Active",
+                type: "FREE",
                 time: new Date().toISOString()
             }]
         };
-        save();
+    } else {
+        // بروزرسانی ساختار حافظه کاربران قدیمی بدون پاک شدن خریدهایشان
+        if(!state.ownedMiners){
+            state.ownedMiners = {};
+            if(state.activeMinerId){
+                state.ownedMiners[state.activeMinerId] = 1;
+            }
+        }
+        
+        // مطمئن می‌شویم کتانی رایگان دارند
+        if(!state.ownedMiners.sneaker){
+            state.ownedMiners.sneaker = 1;
+        }
+
+        if(!state.history) state.history = [];
+        if(typeof state.balance !== "number") state.balance = 0;
+        if(typeof state.totalEarned !== "number") state.totalEarned = 0;
+        if(!state.miningStarted) state.miningStarted = Date.now();
     }
+
+    save();
 }
 
 function save(){
@@ -971,22 +812,17 @@ function showPage(page, button){
     document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
     document.getElementById(page).classList.add("active");
     document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
-    if(button){
-        button.classList.add("active");
-    }
+    if(button){ button.classList.add("active"); }
     window.scrollTo({ top:0, behavior:"smooth" });
 }
 
 function getTotalMonthlyReward(){
     let totalReward = 0;
     if(!state.ownedMiners) return 0;
-    
     for(let id in state.ownedMiners){
         const count = state.ownedMiners[id] || 0;
         const miner = miners.find(m => m.id === id);
-        if(miner){
-            totalReward += miner.reward * count;
-        }
+        if(miner){ totalReward += miner.reward * count; }
     }
     return totalReward;
 }
@@ -998,6 +834,21 @@ function getTotalMinersCount(){
         total += state.ownedMiners[id] || 0;
     }
     return total;
+}
+
+function getTopMinerIcon(){
+    let topIcon = "👟";
+    let maxPrice = -1;
+    for(let id in state.ownedMiners){
+        if(state.ownedMiners[id] > 0){
+            const m = miners.find(x => x.id === id);
+            if(m && m.price > maxPrice){
+                maxPrice = m.price;
+                topIcon = m.icon;
+            }
+        }
+    }
+    return topIcon;
 }
 
 function renderMiners(){
@@ -1019,8 +870,8 @@ function renderMiners(){
                     <div class="miner-icon">${miner.icon}</div>
                     <div class="miner-info">
                         <div class="miner-name">${miner.name} ${count > 0 ? `<span class="owned-badge">x${count} Owned</span>` : ''}</div>
-                        <div class="miner-price">Activation: ${money(miner.price)}</div>
-                        <div class="miner-reward">Monthly reward: ${money(miner.reward)} / unit</div>
+                        <div class="miner-price">Price: ${money(miner.price)}</div>
+                        <div class="miner-reward">Monthly Reward: ${money(miner.reward)}</div>
                     </div>
                     <button class="buy-btn" onclick="buyMiner('${miner.id}')">
                         BUY (+1)
@@ -1038,48 +889,32 @@ function buyMiner(id){
 
     if(state.balance >= miner.price){
         state.balance -= miner.price;
-        
-        if(!state.ownedMiners){
-            state.ownedMiners = {};
-        }
+        if(!state.ownedMiners) state.ownedMiners = {};
         state.ownedMiners[id] = (state.ownedMiners[id] || 0) + 1;
         
-        addHistory("Miner Purchased", miner.name + " (+1)", "-" + money(miner.price));
+        addHistory("Bought " + miner.name, miner.name + " (+1)", "-" + money(miner.price));
         save();
         updateUI();
         
-        const currentCount = state.ownedMiners[id];
-        showModal(
-            "Purchase Successful!", 
-            "Successfully bought another " + miner.name + "!\n\nYou now own: " + currentCount + " unit(s).\nTotal Speed Increased!"
-        );
+        showModal("Purchase Successful!", "You purchased 1x " + miner.name + "!\nTotal owned: " + state.ownedMiners[id]);
     } else {
-        showModal(
-            "Insufficient Balance",
-            "Price: " + money(miner.price) +
-            "\nYour Balance: " + money(state.balance) +
-            "\n\nPlease deposit USDT (BEP20) to buy this miner."
-        );
+        showModal("Insufficient Balance", "Price: " + money(miner.price) + "\nYour Balance: " + money(state.balance) + "\n\nPlease deposit USDT to buy this miner.");
     }
 }
 
 function updateMining(){
     if(!state.miningStarted) return;
-
     const totalReward = getTotalMonthlyReward();
-    const now = Date.now();
-    const elapsed = Math.max(0, now - state.miningStarted);
+    const elapsed = Math.max(0, Date.now() - state.miningStarted);
     const seconds = elapsed / 1000;
     const monthlySeconds = 30 * 24 * 60 * 60;
 
-    const earned = totalReward * (seconds / monthlySeconds);
-    state.mined = earned;
+    state.mined = totalReward * (seconds / monthlySeconds);
     save();
 }
 
 function getMiningTime(){
     if(!state.miningStarted) return "00:00:00";
-
     const elapsed = Math.max(0, Date.now() - state.miningStarted);
     const totalSeconds = Math.floor(elapsed / 1000);
     const days = Math.floor(totalSeconds / 86400);
@@ -1088,9 +923,7 @@ function getMiningTime(){
     const seconds = totalSeconds % 60;
 
     const pad = n => String(n).padStart(2,"0");
-    if(days > 0){
-        return days + "d " + pad(hours) + ":" + pad(minutes) + ":" + pad(seconds);
-    }
+    if(days > 0) return days + "d " + pad(hours) + ":" + pad(minutes) + ":" + pad(seconds);
     return pad(hours) + ":" + pad(minutes) + ":" + pad(seconds);
 }
 
@@ -1104,9 +937,10 @@ function updateUI(){
     const totalMiners = getTotalMinersCount();
     const totalReward = getTotalMonthlyReward();
 
-    document.getElementById("profileMiner").textContent = totalMiners + " Units Active";
-    document.getElementById("activeMiner").textContent = totalMiners + " Miners";
-    document.getElementById("heroSub").textContent = "Total Monthly Rate: " + money(totalReward);
+    document.getElementById("profileMiner").textContent = totalMiners + " Vehicles";
+    document.getElementById("activeMiner").textContent = totalMiners + " Vehicles";
+    document.getElementById("heroSub").textContent = "Total Monthly Speed: " + money(totalReward);
+    document.getElementById("heroIcon").textContent = getTopMinerIcon();
     
     document.getElementById("mined").textContent = "$" + Number(state.mined).toFixed(6);
     document.getElementById("miningTime").textContent = getMiningTime();
@@ -1159,38 +993,43 @@ function renderHistory(){
 
 function copyWallet(){
     navigator.clipboard.writeText(PROJECT_WALLET).then(() => {
-        showModal("Copied", "BEP20 USDT wallet address copied successfully.");
+        showModal("Copied", "BEP20 USDT wallet address copied.");
     });
 }
 
 function copyReferral(){
     const link = document.getElementById("referralLink").textContent.trim();
     if(link.includes("Generating") || link.includes("Open inside")){
-        showModal("Notice", "Please open the Mini App inside Telegram to get your referral link.");
+        showModal("Notice", "Please open inside Telegram to get your link.");
         return;
     }
     navigator.clipboard.writeText(link).then(() => {
-        showModal("Copied", "Referral link copied to clipboard!");
+        showModal("Copied", "Referral link copied!");
     });
 }
 
 function submitDeposit(){
     const hash = document.getElementById("txHash").value.trim();
+    const amount = parseFloat(document.getElementById("depositAmountInput").value);
+
+    if(!amount || amount <= 0){
+        showModal("Invalid Amount", "Please enter valid USDT amount.");
+        return;
+    }
+
     if(!hash){
-        showModal("Transaction Required", "Enter the BSC transaction hash.");
+        showModal("Transaction Hash Required", "Please enter BSC tx hash.");
         return;
     }
     
-    // شارژ خودکار ۱۰ دلار
-    const addedAmount = 10.00;
-    
-    state.balance += addedAmount;
-    addHistory("Deposit Verified", "BSC Network - TX: " + hash.substring(0, 8) + "...", "COMPLETED");
+    state.balance += amount;
+    addHistory("Deposit Verified", "$" + amount.toFixed(2) + " USDT - Hash: " + hash.substring(0, 8) + "...", "COMPLETED");
     save();
     updateUI();
     
     document.getElementById("txHash").value = "";
-    showModal("Deposit Successful", "Transaction verified on BSC Blockchain!\n\n$" + addedAmount.toFixed(2) + " USDT added to your balance.");
+    document.getElementById("depositAmountInput").value = "";
+    showModal("Deposit Successful", "$" + amount.toFixed(2) + " USDT added to your balance!");
 }
 
 function requestWithdraw(){
@@ -1198,14 +1037,18 @@ function requestWithdraw(){
     const amount = Number(document.getElementById("withdrawAmount").value);
 
     if(!address || !amount || amount <= 0 || amount > state.balance){
-        showModal("Error", "Check your withdrawal address and balance.");
+        showModal("Error", "Check withdrawal address and balance.");
         return;
     }
 
+    state.balance -= amount;
     addHistory("Withdrawal Requested", amount.toFixed(2) + " USD → " + address, "PENDING");
+    save();
+    updateUI();
+
     document.getElementById("withdrawAddress").value = "";
     document.getElementById("withdrawAmount").value = "";
-    showModal("Withdrawal Submitted", "Your request is pending.");
+    showModal("Submitted", "Withdrawal request submitted.");
 }
 
 function showModal(title, text){
@@ -1216,32 +1059,6 @@ function showModal(title, text){
 
 function closeModal(){
     document.getElementById("modal").classList.remove("show");
-}
-
-function checkReferralParam(currentId){
-    const urlParams = new URLSearchParams(window.location.search);
-    const startParam = urlParams.get('start') || urlParams.get('tgWebAppStartParam');
-    
-    if(startParam && startParam !== String(currentId)){
-        const inviterKey = getStorageKey(startParam);
-        const inviterSaved = localStorage.getItem(inviterKey);
-        
-        const alreadyReferredKey = "referred_by_" + currentId;
-        if(!localStorage.getItem(alreadyReferredKey)){
-            if(inviterSaved){
-                let inviterState = JSON.parse(inviterSaved);
-                inviterState.referrals = (inviterState.referrals || 0) + 1;
-                localStorage.setItem(inviterKey, JSON.stringify(inviterState));
-            } else {
-                let inviterState = {
-                    balance: 0, starterCredit: 0.30, ownedMiners: { sneaker: 1 },
-                    miningStarted: Date.now(), mined: 0, totalEarned: 0, referrals: 1, history: []
-                };
-                localStorage.setItem(inviterKey, JSON.stringify(inviterState));
-            }
-            localStorage.setItem(alreadyReferredKey, startParam);
-        }
-    }
 }
 
 function initTelegram(){
@@ -1260,15 +1077,10 @@ function initTelegram(){
 
             const refLink = "https://t.me/" + BOT_USERNAME + "?start=" + userId;
             document.getElementById("referralLink").textContent = refLink;
-        } else {
-            document.getElementById("referralLink").textContent = "Open inside Telegram to generate link.";
         }
-    } else {
-        document.getElementById("referralLink").textContent = "Open inside Telegram to generate link.";
     }
 
     loadStateForUser(userId);
-    checkReferralParam(userId);
     updateUI();
 }
 
