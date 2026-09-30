@@ -744,7 +744,6 @@ const miners = [
 let currentUserId = "guest";
 let state = {};
 
-// حافظه روی نام اصلی تنظیم شده تا اطلاعات کاربران قدیمی حفظ شود
 function getStorageKey(userId){
     return "minerGarageState_" + userId;
 }
@@ -754,15 +753,10 @@ function loadStateForUser(userId){
     const saved = localStorage.getItem(getStorageKey(userId));
     
     if(saved){
-        try {
-            state = JSON.parse(saved);
-        } catch(e) {
-            state = null;
-        }
+        try { state = JSON.parse(saved); } catch(e) { state = null; }
     }
 
     if(!state || typeof state !== "object"){
-        // کاربر جدید که تازه استارت می‌زند
         state = {
             balance: 0,
             ownedMiners: { sneaker: 1 },
@@ -778,19 +772,11 @@ function loadStateForUser(userId){
             }]
         };
     } else {
-        // بروزرسانی ساختار حافظه کاربران قدیمی بدون پاک شدن خریدهایشان
         if(!state.ownedMiners){
             state.ownedMiners = {};
-            if(state.activeMinerId){
-                state.ownedMiners[state.activeMinerId] = 1;
-            }
+            if(state.activeMinerId) state.ownedMiners[state.activeMinerId] = 1;
         }
-        
-        // مطمئن می‌شویم کتانی رایگان دارند
-        if(!state.ownedMiners.sneaker){
-            state.ownedMiners.sneaker = 1;
-        }
-
+        if(!state.ownedMiners.sneaker) state.ownedMiners.sneaker = 1;
         if(!state.history) state.history = [];
         if(typeof state.balance !== "number") state.balance = 0;
         if(typeof state.totalEarned !== "number") state.totalEarned = 0;
@@ -802,6 +788,46 @@ function loadStateForUser(userId){
 
 function save(){
     localStorage.setItem(getStorageKey(currentUserId), JSON.stringify(state));
+}
+
+function processReferral(referrerId){
+    if(!referrerId || referrerId == currentUserId) return;
+    
+    // خواندن حافظه شخص دعوت‌کننده
+    const refKey = getStorageKey(referrerId);
+    const refData = localStorage.getItem(refKey);
+    let refState = null;
+    
+    if(refData){
+        try{ refState = JSON.parse(refData); }catch(e){}
+    }
+    
+    if(!refState){
+        refState = {
+            balance: 0,
+            ownedMiners: { sneaker: 1 },
+            miningStarted: Date.now(),
+            mined: 0,
+            totalEarned: 0,
+            referrals: 0,
+            history: []
+        };
+    }
+    
+    // اگر کاربر جدید است، برای دعوت‌کننده یک زیرمجموعه اضافه می‌شود
+    if(!state.referredBy){
+        state.referredBy = referrerId;
+        refState.referrals = (refState.referrals || 0) + 1;
+        refState.history.unshift({
+            title: "New Referral Added",
+            description: "User " + currentUserId + " joined using your link",
+            type: "+1 REF",
+            time: new Date().toISOString()
+        });
+        
+        localStorage.setItem(refKey, JSON.stringify(refState));
+        save();
+    }
 }
 
 function money(value){
@@ -1063,24 +1089,36 @@ function closeModal(){
 
 function initTelegram(){
     let userId = "guest";
+    let startParam = null;
+
     if(window.Telegram && window.Telegram.WebApp){
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
 
-        if(tg.initDataUnsafe && tg.initDataUnsafe.user){
-            const user = tg.initDataUnsafe.user;
-            userId = user.id;
+        if(tg.initDataUnsafe){
+            if(tg.initDataUnsafe.user){
+                const user = tg.initDataUnsafe.user;
+                userId = user.id;
 
-            document.getElementById("profileName").textContent = (user.first_name || "") + (user.last_name ? " " + user.last_name : "");
-            document.getElementById("profileId").textContent = "Telegram ID: " + userId;
+                document.getElementById("profileName").textContent = (user.first_name || "") + (user.last_name ? " " + user.last_name : "");
+                document.getElementById("profileId").textContent = "Telegram ID: " + userId;
 
-            const refLink = "https://t.me/" + BOT_USERNAME + "?start=" + userId;
-            document.getElementById("referralLink").textContent = refLink;
+                const refLink = "https://t.me/" + BOT_USERNAME + "?start=" + userId;
+                document.getElementById("referralLink").textContent = refLink;
+            }
+            if(tg.initDataUnsafe.start_param){
+                startParam = tg.initDataUnsafe.start_param;
+            }
         }
     }
 
     loadStateForUser(userId);
+
+    if(startParam){
+        processReferral(startParam);
+    }
+
     updateUI();
 }
 
