@@ -652,8 +652,8 @@ button{
             <div class="stat-value" id="referrals">0</div>
         </div>
         <div class="stat">
-            <div class="stat-label">Referral Earnings</div>
-            <div class="stat-value green" id="referralEarnings">$0.00</div>
+            <div class="stat-label">Invited By</div>
+            <div class="stat-value green" id="invitedBy">None</div>
         </div>
     </div>
 </section>
@@ -735,7 +735,7 @@ const miners = [
     { id:"sneaker", name:"Starter Sneaker", icon:"👟", price:0.30, reward:0.50, starter:true },
     { id:"bicycle", name:"Bicycle", icon:"🚲", price:0.50, reward:1.50 },
     { id:"basic-motorcycle", name:"Basic Motorcycle", icon:"🏍️", price:1.00, reward:3.00 },
-    { id:"professional-motorcycle", name:"Professional Motorcycle", icon:"🏍️", price:3.00, reward:5.00 },
+    { id:"professional-motorcycle", name:"Professional Motorcycle", icon:"🏍️️", price:3.00, reward:5.00 },
     { id:"standard-car", name:"Standard Car", icon:"🚗", price:5.00, reward:8.00 },
     { id:"professional-car", name:"Professional Car", icon:"🚘", price:7.00, reward:11.00 },
     { id:"luxury-truck", name:"Luxury Heavy Truck", icon:"🚛", price:10.00, reward:15.00 }
@@ -764,6 +764,7 @@ function loadStateForUser(userId){
             mined: 0,
             totalEarned: 0,
             referrals: 0,
+            referredBy: null,
             history: [{
                 title: "Starter Sneaker Active",
                 description: "Free $0.50/mo Bonus Miner Active",
@@ -793,40 +794,15 @@ function save(){
 function processReferral(referrerId){
     if(!referrerId || referrerId == currentUserId) return;
     
-    // خواندن حافظه شخص دعوت‌کننده
-    const refKey = getStorageKey(referrerId);
-    const refData = localStorage.getItem(refKey);
-    let refState = null;
-    
-    if(refData){
-        try{ refState = JSON.parse(refData); }catch(e){}
-    }
-    
-    if(!refState){
-        refState = {
-            balance: 0,
-            ownedMiners: { sneaker: 1 },
-            miningStarted: Date.now(),
-            mined: 0,
-            totalEarned: 0,
-            referrals: 0,
-            history: []
-        };
-    }
-    
-    // اگر کاربر جدید است، برای دعوت‌کننده یک زیرمجموعه اضافه می‌شود
+    // ثبت اینکه این کاربر توسط چه کسی دعوت شده
     if(!state.referredBy){
         state.referredBy = referrerId;
-        refState.referrals = (refState.referrals || 0) + 1;
-        refState.history.unshift({
-            title: "New Referral Added",
-            description: "User " + currentUserId + " joined using your link",
-            type: "+1 REF",
-            time: new Date().toISOString()
-        });
-        
-        localStorage.setItem(refKey, JSON.stringify(refState));
+        addHistory("Joined via Referral", "Invited by User ID: " + referrerId, "REFERRAL");
         save();
+        
+        setTimeout(() => {
+            showModal("Welcome Bonus!", "You joined using invitation link from User: " + referrerId);
+        }, 800);
     }
 }
 
@@ -973,6 +949,7 @@ function updateUI(){
 
     document.getElementById("referrals").textContent = state.referrals || 0;
     document.getElementById("profileReferrals").textContent = state.referrals || 0;
+    document.getElementById("invitedBy").textContent = state.referredBy ? state.referredBy : "None";
 
     let progress = 0;
     if(state.miningStarted){
@@ -1091,6 +1068,12 @@ function initTelegram(){
     let userId = "guest";
     let startParam = null;
 
+    // خواندن پارامتر رفرال از URL یا تلگرام
+    const urlParams = new URLSearchParams(window.location.search);
+    if(urlParams.has("start")){
+        startParam = urlParams.get("start");
+    }
+
     if(window.Telegram && window.Telegram.WebApp){
         const tg = window.Telegram.WebApp;
         tg.ready();
@@ -1104,7 +1087,8 @@ function initTelegram(){
                 document.getElementById("profileName").textContent = (user.first_name || "") + (user.last_name ? " " + user.last_name : "");
                 document.getElementById("profileId").textContent = "Telegram ID: " + userId;
 
-                const refLink = "https://t.me/" + BOT_USERNAME + "?start=" + userId;
+                // لینک رفرال استاندارد با startapp
+                const refLink = "https://t.me/" + BOT_USERNAME + "/app?startapp=" + userId;
                 document.getElementById("referralLink").textContent = refLink;
             }
             if(tg.initDataUnsafe.start_param){
