@@ -735,7 +735,7 @@ const miners = [
     { id:"sneaker", name:"Starter Sneaker", icon:"👟", price:0.30, reward:0.50, starter:true },
     { id:"bicycle", name:"Bicycle", icon:"🚲", price:0.50, reward:1.50 },
     { id:"basic-motorcycle", name:"Basic Motorcycle", icon:"🏍️", price:1.00, reward:3.00 },
-    { id:"professional-motorcycle", name:"Professional Motorcycle", icon:"🏍️️", price:3.00, reward:5.00 },
+    { id:"professional-motorcycle", name:"Professional Motorcycle", icon:"🏍", price:3.00, reward:5.00 },
     { id:"standard-car", name:"Standard Car", icon:"🚗", price:5.00, reward:8.00 },
     { id:"professional-car", name:"Professional Car", icon:"🚘", price:7.00, reward:11.00 },
     { id:"luxury-truck", name:"Luxury Heavy Truck", icon:"🚛", price:10.00, reward:15.00 }
@@ -792,17 +792,22 @@ function save(){
 }
 
 function processReferral(referrerId){
-    if(!referrerId || referrerId == currentUserId) return;
+    if(!referrerId) return;
     
-    // ثبت اینکه این کاربر توسط چه کسی دعوت شده
+    // تبدیل هر دو آیدی به استرینگ برای مقایسه دقیق
+    const refStr = String(referrerId).trim();
+    const myStr = String(currentUserId).trim();
+
+    if(refStr === myStr) return; // خود کاربر نمی‌تواند رفرال خودش شود
+    
     if(!state.referredBy){
-        state.referredBy = referrerId;
-        addHistory("Joined via Referral", "Invited by User ID: " + referrerId, "REFERRAL");
+        state.referredBy = refStr;
+        addHistory("Joined via Referral", "Invited by User ID: " + refStr, "REFERRAL");
         save();
         
         setTimeout(() => {
-            showModal("Welcome Bonus!", "You joined using invitation link from User: " + referrerId);
-        }, 800);
+            showModal("Welcome Bonus!", "You joined using invitation link from User: " + refStr);
+        }, 500);
     }
 }
 
@@ -1065,40 +1070,43 @@ function closeModal(){
 }
 
 function initTelegram(){
-    let userId = "guest";
+    let userId = "guest_" + Math.floor(Math.random() * 89999 + 10000);
     let startParam = null;
 
-    // خواندن پارامتر رفرال از URL یا تلگرام
+    // ۱. استخراج پارامتر دعوت از تمام حالت‌های ممکن URL
     const urlParams = new URLSearchParams(window.location.search);
-    if(urlParams.has("start")){
-        startParam = urlParams.get("start");
-    }
+    if(urlParams.has("startapp")) startParam = urlParams.get("startapp");
+    else if(urlParams.has("start")) startParam = urlParams.get("start");
+    else if(urlParams.has("ref")) startParam = urlParams.get("ref");
 
+    // ۲. بررسی شناسه کاربر از تلگرام
     if(window.Telegram && window.Telegram.WebApp){
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
 
         if(tg.initDataUnsafe){
-            if(tg.initDataUnsafe.user){
-                const user = tg.initDataUnsafe.user;
-                userId = user.id;
+            if(tg.initDataUnsafe.user && tg.initDataUnsafe.user.id){
+                userId = String(tg.initDataUnsafe.user.id);
 
-                document.getElementById("profileName").textContent = (user.first_name || "") + (user.last_name ? " " + user.last_name : "");
+                document.getElementById("profileName").textContent = (tg.initDataUnsafe.user.first_name || "") + (tg.initDataUnsafe.user.last_name ? " " + tg.initDataUnsafe.user.last_name : "");
                 document.getElementById("profileId").textContent = "Telegram ID: " + userId;
 
-                // لینک رفرال استاندارد با startapp
+                // فرمت استاندارد لینک رفرال تلگرام
                 const refLink = "https://t.me/" + BOT_USERNAME + "/app?startapp=" + userId;
                 document.getElementById("referralLink").textContent = refLink;
             }
+
             if(tg.initDataUnsafe.start_param){
-                startParam = tg.initDataUnsafe.start_param;
+                startParam = String(tg.initDataUnsafe.start_param);
             }
         }
     }
 
+    // بارگذاری اطلاعات بر اساس آیدی کاربر
     loadStateForUser(userId);
 
+    // ۳. اعمال رفرال
     if(startParam){
         processReferral(startParam);
     }
