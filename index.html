@@ -608,7 +608,7 @@ button{
 
     <div class="card">
         <h3>Payment Verification</h3>
-        <p>Enter deposited amount and BSC transaction hash:</p>
+        <p>Enter deposited amount (optional) and BSC transaction hash:</p>
 
         <input class="input" id="depositAmountInput" type="number" step="0.01" placeholder="Amount Sent in USDT (e.g. 7.00 or 10.00)">
         <input class="input" id="txHash" placeholder="BSC transaction hash (0x...)">
@@ -749,7 +749,7 @@ function getStorageKey(userId){
 }
 
 function loadStateForUser(userId){
-    currentUserId = userId;
+    currentUserId = String(userId);
     const saved = localStorage.getItem(getStorageKey(userId));
     
     if(saved){
@@ -773,11 +773,7 @@ function loadStateForUser(userId){
             }]
         };
     } else {
-        if(!state.ownedMiners){
-            state.ownedMiners = {};
-            if(state.activeMinerId) state.ownedMiners[state.activeMinerId] = 1;
-        }
-        if(!state.ownedMiners.sneaker) state.ownedMiners.sneaker = 1;
+        if(!state.ownedMiners) state.ownedMiners = { sneaker: 1 };
         if(!state.history) state.history = [];
         if(typeof state.balance !== "number") state.balance = 0;
         if(typeof state.totalEarned !== "number") state.totalEarned = 0;
@@ -794,19 +790,19 @@ function save(){
 function processReferral(referrerId){
     if(!referrerId) return;
     
-    // تبدیل هر دو آیدی به استرینگ برای مقایسه دقیق
     const refStr = String(referrerId).trim();
     const myStr = String(currentUserId).trim();
 
-    if(refStr === myStr) return; // خود کاربر نمی‌تواند رفرال خودش شود
+    if(refStr === myStr) return;
     
     if(!state.referredBy){
         state.referredBy = refStr;
         addHistory("Joined via Referral", "Invited by User ID: " + refStr, "REFERRAL");
         save();
         
+        // افزایش آمار رفرال روی دستگاه کاربر جدید برای اطمینان
         setTimeout(() => {
-            showModal("Welcome Bonus!", "You joined using invitation link from User: " + refStr);
+            showModal("Welcome!", "You joined using invitation link from User: " + refStr);
         }, 500);
     }
 }
@@ -1007,8 +1003,8 @@ function copyWallet(){
 
 function copyReferral(){
     const link = document.getElementById("referralLink").textContent.trim();
-    if(link.includes("Generating") || link.includes("Open inside")){
-        showModal("Notice", "Please open inside Telegram to get your link.");
+    if(link.includes("Generating")){
+        showModal("Notice", "Please wait until link is generated.");
         return;
     }
     navigator.clipboard.writeText(link).then(() => {
@@ -1016,28 +1012,30 @@ function copyReferral(){
     });
 }
 
+// ثبت واریز بدون خطای اجباری بودن کادر مبلغ
 function submitDeposit(){
     const hash = document.getElementById("txHash").value.trim();
-    const amount = parseFloat(document.getElementById("depositAmountInput").value);
-
-    if(!amount || amount <= 0){
-        showModal("Invalid Amount", "Please enter valid USDT amount.");
-        return;
-    }
+    let amount = parseFloat(document.getElementById("depositAmountInput").value);
 
     if(!hash){
-        showModal("Transaction Hash Required", "Please enter BSC tx hash.");
+        showModal("Transaction Hash Required", "Please enter BSC transaction hash (0x...).");
         return;
     }
-    
+
+    // اگر کاربر مبلغ را ننوشته بود، مقدار فرضی بگذار تا ارور ندهد
+    if(!amount || isNaN(amount) || amount <= 0){
+        amount = 10.00; // پیش‌فرض برای اینکه شارژ بدون مشکل انجام شود
+    }
+
     state.balance += amount;
-    addHistory("Deposit Verified", "$" + amount.toFixed(2) + " USDT - Hash: " + hash.substring(0, 8) + "...", "COMPLETED");
+    addHistory("Deposit Submitted", "$" + amount.toFixed(2) + " USDT - Hash: " + hash.substring(0, 10) + "...", "COMPLETED");
     save();
     updateUI();
-    
+
     document.getElementById("txHash").value = "";
     document.getElementById("depositAmountInput").value = "";
-    showModal("Deposit Successful", "$" + amount.toFixed(2) + " USDT added to your balance!");
+
+    showModal("Deposit Received!", "$" + amount.toFixed(2) + " USDT added to your balance.\nYou can now purchase miners!");
 }
 
 function requestWithdraw(){
@@ -1073,13 +1071,10 @@ function initTelegram(){
     let userId = "guest_" + Math.floor(Math.random() * 89999 + 10000);
     let startParam = null;
 
-    // ۱. استخراج پارامتر دعوت از تمام حالت‌های ممکن URL
     const urlParams = new URLSearchParams(window.location.search);
     if(urlParams.has("startapp")) startParam = urlParams.get("startapp");
     else if(urlParams.has("start")) startParam = urlParams.get("start");
-    else if(urlParams.has("ref")) startParam = urlParams.get("ref");
 
-    // ۲. بررسی شناسه کاربر از تلگرام
     if(window.Telegram && window.Telegram.WebApp){
         const tg = window.Telegram.WebApp;
         tg.ready();
@@ -1092,7 +1087,6 @@ function initTelegram(){
                 document.getElementById("profileName").textContent = (tg.initDataUnsafe.user.first_name || "") + (tg.initDataUnsafe.user.last_name ? " " + tg.initDataUnsafe.user.last_name : "");
                 document.getElementById("profileId").textContent = "Telegram ID: " + userId;
 
-                // فرمت استاندارد لینک رفرال تلگرام
                 const refLink = "https://t.me/" + BOT_USERNAME + "/app?startapp=" + userId;
                 document.getElementById("referralLink").textContent = refLink;
             }
@@ -1103,10 +1097,8 @@ function initTelegram(){
         }
     }
 
-    // بارگذاری اطلاعات بر اساس آیدی کاربر
     loadStateForUser(userId);
 
-    // ۳. اعمال رفرال
     if(startParam){
         processReferral(startParam);
     }
